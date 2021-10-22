@@ -1,6 +1,6 @@
 import { ASTPath, JSCodeshift } from "jscodeshift";
 
-import { insertCommentBefore } from "../../../../../packages/utils/src";
+import { insertCommentBefore } from "@codeshift/utils";
 
 export type Src<T extends JSCodeshift> = ReturnType<T>;
 
@@ -92,11 +92,12 @@ export const buttonColorToVariant = (
 
             if (!specifiers || !specifiers.length) {
                 return;
-            } else if (specifiers.length > 1) {
-                throw new Error("CUI Button imported multiple times (?)");
-            } else {
-                names.push(specifiers[0].importedAs);
             }
+            if (specifiers.length > 1) {
+                throw new Error("CUI Button imported multiple times (?)");
+            }
+
+            names.push(specifiers[0].importedAs);
         });
 
         /**
@@ -143,66 +144,73 @@ export const buttonColorToVariant = (
         if (!pppName) return false;
 
         return (
-            ((path.node as unknown) as { type: string }).type === "JSXIdentifier" &&
-            importNamesOfCUIButton.includes(pppName) // TODO TS
+            ((path.node as unknown) as { type: string }).type === "JSXIdentifier" && // TODO TS
+            importNamesOfCUIButton.includes(pppName)
         );
     };
 
     src.find(j.JSXIdentifier).forEach(path => {
-        const isAttr = isAttributeOfCUIButton(path);
-        // console.log("color -> variant", path, isAttr);
-
-        if (!isAttr) {
+        if (path.node.name !== "color" || !isAttributeOfCUIButton(path)) {
             return;
         }
 
-        if (path.node.name === "color") {
-            j(path).replaceWith(j.identifier("variant"));
-            console.log("color path.parentPath.val.val.val", path.parentPath.value.value.value); // TODO TS
+        /**
+         * replace the `color` prop
+         */
+        j(path).replaceWith(j.identifier("variant"));
 
-            // should be `readonly [A, B]` but eslint can't parse...
-            interface Tuple<A, B> {
-                0: A;
-                1: B;
-            }
+        console.log("color path.parentPath.val.val.val", path.parentPath.value.value.value);
 
-            const fromToValueMap: Record<string, Tuple<string, boolean /** does it need manual intervention? */>> = {
-                ghost: ["ghost", true], // TODO testing; should be false
-                black64: ["primary", true],
-                black128: ["primary", true],
-                black256: ["primary", true],
-            };
+        // should be `readonly [A, B]` but eslint can't parse...
+        interface Tuple<A, B> {
+            0: A;
+            1: B;
+        }
 
-            const from = path.parentPath.value.value.value;
-            const _to = fromToValueMap[from];
-
-            if (!_to) {
-                // TODO collect info & log once done?
-                return;
-            }
-
-            const to = [_to[0], _to[1]];
-            const newValue = to[0];
-            const needsManualIntervention = to[1];
-
-            if (!newValue) {
-                // TODO collect info & log once done?
-                return;
-            }
-
-            path.parentPath.value.value.value = newValue;
-
-            if (!needsManualIntervention) {
-                return;
-            }
-
+        const fromToValueMap: Record<string, Tuple<string, boolean /** does it need manual intervention? */>> = {
+            ghost: ["ghost", false],
             /**
-             * TODO: finish this up
+             * TODO: provide proper map
              */
-            insertCommentBefore(
-                j,
-                j(path),
-                `\
+            black64: ["primary", true],
+            black128: ["primary", true],
+            black256: ["primary", true],
+        };
+
+        const from = path.parentPath.value.value.value;
+        const to = fromToValueMap[from];
+
+        if (!to) {
+            // TODO collect info & log once done?
+            return;
+        }
+
+        const newValue = to[0];
+        const needsManualIntervention = to[1];
+
+        if (!newValue) {
+            // TODO collect info & log once done?
+            return;
+        }
+
+        /**
+         * TODO: using proper selected might be better
+         *
+         * replace the actual value of the `color` prop
+         */
+        path.parentPath.value.value.value = newValue;
+
+        if (!needsManualIntervention) {
+            return;
+        }
+
+        /**
+         * TODO: finish this up
+         */
+        insertCommentBefore(
+            j,
+            j(path),
+            `\
 DEAR MAINTAINER, THERE IS NO CLEAR 1:1 MAPPING.
 
 WE ARE ONLY PROVIDING AN ESTIMATE FITTING VALUE,
@@ -215,8 +223,7 @@ READ THE MIGRATION GUIDE TO LEARN HOW:
 
 .
 			`,
-                " TODO CODEMOD\n\n",
-            );
-        }
+            " TODO CODEMOD\n\n",
+        );
     });
 };
