@@ -1,5 +1,7 @@
 import { ASTPath, JSCodeshift } from "jscodeshift";
 
+import { insertCommentBefore } from "../../../../../packages/utils/src";
+
 export type Src<T extends JSCodeshift> = ReturnType<T>;
 
 export interface Specifier {
@@ -156,6 +158,65 @@ export const buttonColorToVariant = (
 
         if (path.node.name === "color") {
             j(path).replaceWith(j.identifier("variant"));
+            console.log("color path.parentPath.val.val.val", path.parentPath.value.value.value); // TODO TS
+
+            // should be `readonly [A, B]` but eslint can't parse...
+            interface Tuple<A, B> {
+                0: A;
+                1: B;
+            }
+
+            const fromToValueMap: Record<string, Tuple<string, boolean /** does it need manual intervention? */>> = {
+                ghost: ["ghost", true], // TODO testing; should be false
+                black64: ["primary", true],
+                black128: ["primary", true],
+                black256: ["primary", true],
+            };
+
+            const from = path.parentPath.value.value.value;
+            const _to = fromToValueMap[from];
+
+            if (!_to) {
+                // TODO collect info & log once done?
+                return;
+            }
+
+            const to = [_to[0], _to[1]];
+            const newValue = to[0];
+            const needsManualIntervention = to[1];
+
+            if (!newValue) {
+                // TODO collect info & log once done?
+                return;
+            }
+
+            path.parentPath.value.value.value = newValue;
+
+            if (!needsManualIntervention) {
+                return;
+            }
+
+            /**
+             * TODO: finish this up
+             */
+            insertCommentBefore(
+                j,
+                j(path),
+                `\
+DEAR MAINTAINER, THERE IS NO CLEAR 1:1 MAPPING.
+
+WE ARE ONLY PROVIDING AN ESTIMATE FITTING VALUE,
+BUT YOU ARE EXPECTED TO VERIFY THIS YOURSELF.
+
+READ THE MIGRATION GUIDE TO LEARN HOW:
+
+<...> 
+
+
+.
+			`,
+                " TODO CODEMOD\n\n",
+            );
         }
     });
 };
