@@ -48,72 +48,6 @@ export const buttonColorToVariant = (
     j: JSCodeshift, //
     src: Src<typeof j>,
 ) => {
-    const imports = getParsedImports(j, src);
-
-    console.log({ imports });
-
-    const getImportNamesOfCUIButton = () => {
-        let names: string[] = [];
-
-        /**
-         * handle cases for:
-         *
-         * 1. import { Button } from "cui";
-         * 2. import { Button as CUIButton } from "cui";
-         *  (CUIButton just an example name; can be different)
-         *
-         */
-
-        imports.forEach(i => {
-            /**
-             * TODO: consider parsing deeper files
-             * that are imported locally
-             * whom could've wrapped the CUI Button
-             * in their own implementation
-             *
-             * could do this by only doing this for
-             * 1) JSX elements, that 2) have the `color` prop
-             *
-             * would have to 1) handle module resolution probably,
-             * and 2) avoid cycling dependencies.
-             *
-             * will consider if worth it. probably would be for styled-component wraps
-             * or just general improvements.
-             *
-             * or maybe we should explicitly __not__ do this
-             * to avoid encounraging consumers to wrap our components?
-             *
-             */
-            if (i.from !== cuiLibraryName) {
-                return;
-            }
-
-            const specifiers = i.specifiers.filter(s => s.exportedAs === "Button");
-
-            if (!specifiers || !specifiers.length) {
-                return;
-            }
-            if (specifiers.length > 1) {
-                throw new Error("CUI Button imported multiple times (?)");
-            }
-
-            names.push(specifiers[0].importedAs);
-        });
-
-        /**
-         * handle cases for:
-         *
-         * (const Button - Button just example name; can be different)
-         * 1. const Button = styled(Button)`
-         *
-         * `;
-         *
-         */
-        // TODO
-
-        return names;
-    };
-
     const importNamesOfCUIButton = getImportNamesOfCUIButton();
     console.log({ importNamesOfCUIButton });
 
@@ -121,33 +55,6 @@ export const buttonColorToVariant = (
     if (!importNamesOfCUIButton || !importNamesOfCUIButton.length) {
         return;
     }
-
-    const isAttributeOfCUIButton = <T>(path: ASTPath<T>): boolean => {
-        const pppName =
-            path &&
-            path.parentPath &&
-            path.parentPath.parentPath &&
-            path.parentPath.parentPath.parentPath &&
-            path.parentPath.parentPath.parentPath.value &&
-            path.parentPath.parentPath.parentPath.value.name &&
-            path.parentPath.parentPath.parentPath.value.name.name;
-
-        // console.log(
-        //     "path",
-        //     path,
-        //     path.node.name,
-        //     pppName,
-        //     path.node.type === "JSXIdentifier",
-        //     namesOfCUIButton.includes(pppName),
-        // );
-
-        if (!pppName) return false;
-
-        return (
-            ((path.node as unknown) as { type: string }).type === "JSXIdentifier" && // TODO TS
-            importNamesOfCUIButton.includes(pppName)
-        );
-    };
 
     src.find(j.JSXIdentifier).forEach(path => {
         if (path.node.name !== "color" || !isAttributeOfCUIButton(path)) {
@@ -226,4 +133,99 @@ READ THE MIGRATION GUIDE TO LEARN HOW:
             " TODO CODEMOD\n\n",
         );
     });
+
+    /**
+     * only utils below:
+     */
+
+    function isAttributeOfCUIButton<T>(path: ASTPath<T>): boolean {
+        const pppName =
+            path &&
+            path.parentPath &&
+            path.parentPath.parentPath &&
+            path.parentPath.parentPath.parentPath &&
+            path.parentPath.parentPath.parentPath.value &&
+            path.parentPath.parentPath.parentPath.value.name &&
+            path.parentPath.parentPath.parentPath.value.name.name;
+
+        // console.log(
+        //     "path",
+        //     path,
+        //     path.node.name,
+        //     pppName,
+        //     path.node.type === "JSXIdentifier",
+        //     namesOfCUIButton.includes(pppName),
+        // );
+
+        if (!pppName) return false;
+
+        return (
+            ((path.node as unknown) as { type: string }).type === "JSXIdentifier" && // TODO TS
+            importNamesOfCUIButton.includes(pppName)
+        );
+    }
+
+    function getImportNamesOfCUIButton(imports = getParsedImports(j, src)) {
+        console.log({ imports });
+
+        let names: string[] = [];
+
+        /**
+         * handle cases for:
+         *
+         * 1. import { Button } from "cui";
+         * 2. import { Button as CUIButton } from "cui";
+         *  (CUIButton just an example name; can be different)
+         *
+         */
+
+        imports.forEach(i => {
+            /**
+             * TODO: consider parsing deeper files
+             * that are imported locally
+             * whom could've wrapped the CUI Button
+             * in their own implementation
+             *
+             * could do this by only doing this for
+             * 1) JSX elements, that 2) have the `color` prop
+             *
+             * would have to 1) handle module resolution probably,
+             * and 2) avoid cycling dependencies.
+             *
+             * will consider if worth it. probably would be for styled-component wraps
+             * or just general improvements.
+             *
+             * or maybe we should explicitly __not__ do this
+             * to avoid encounraging consumers to wrap our components?
+             *
+             */
+            if (i.from !== cuiLibraryName) {
+                return;
+            }
+
+            const specifiers = i.specifiers.filter(s => s.exportedAs === "Button");
+
+            if (!specifiers || !specifiers.length) {
+                return;
+            }
+            if (specifiers.length > 1) {
+                throw new Error("CUI Button imported multiple times (?)");
+            }
+
+            names.push(specifiers[0].importedAs);
+        });
+
+        /**
+         * handle cases for:
+         *
+         * (const Button - Button just example name; can be different)
+         * 1. const Button = styled(Button)`
+         *
+         * `;
+         *
+         */
+        // TODO
+
+        return names;
+    }
 };
