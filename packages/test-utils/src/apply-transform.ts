@@ -1,12 +1,12 @@
 import jscodeshift from 'jscodeshift';
 
-type Parser = 'babel' | 'babylon' | 'flow' | 'ts' | 'tsx';
+export type Parser = 'babel' | 'babylon' | 'flow' | 'ts' | 'tsx';
 
-interface Options {
+export interface Options {
   parser?: Parser;
 }
 
-export default function applyTransform(
+export function applyTransform(
   transform: any,
   input: string,
   options: Options = {
