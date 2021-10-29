@@ -209,9 +209,10 @@ Make sure the package name ${pkgName} has been spelled correctly and exists befo
   );
 
   for (const transform of transforms) {
-    console.log(chalk.green('Running transform:'), transform);
+    const resolvedTransformPath = path.resolve(transform);
+    console.log(chalk.green('Running transform:'), resolvedTransformPath);
 
-    await jscodeshift.run(transform, paths, {
+    await jscodeshift.run(resolvedTransformPath, paths, {
       verbose: 0,
       dry: flags.dry,
       print: true,
