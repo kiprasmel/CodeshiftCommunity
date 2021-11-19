@@ -1,0 +1,95 @@
+{
+  "$font-family": {
+    "to": ["--pd-font-body-font-family"]
+  },
+  "$font-family-monospace": {
+    "to": ["--pd-font-monospace-font-family"]
+  },
+  "$font-weight-normal": {
+    "to": ["--pd-font-body-font-weight"]
+  },
+  "$font-weight-semi": {
+    "to": ["--pd-font-caption-font-weight"]
+  },
+  "$font-weight-bold": {
+    "to": ["--pd-font-caption-font-weight"]
+  },
+
+  "$font-size-xxl": {
+    "to": ["--pd-font-title-xxl-font-size"]
+  },
+  "$font-size-xl": {
+    "to": ["--pd-font-title-xl-font-size"]
+  },
+  "$font-size-l": {
+    "to": ["--pd-font-body-l-font-size"]
+  },
+  "$font-size-m": {
+    "to": ["--pd-font-body-font-size"]
+  },
+  "$font-size-s": {
+    "to": ["--pd-font-body-s-font-size"]
+  },
+  "$font-size-xs": {
+    "to": ["--pd-font-caption-s-font-size"]
+  },
+
+  "$line-height-xxl": {
+    "to": ["--pd-font-title-xxl-line-height"]
+  },
+  "$line-height-xl": {
+    "to": ["--pd-font-title-xl-line-height"]
+  },
+  "$line-height-l": {
+    "to": ["--pd-font-body-l-line-height"]
+  },
+  "$line-height-m": {
+    "to": ["--pd-font-body-line-height"]
+  },
+  "$line-height-s": {
+    "to": ["--pd-font-body-s-line-height"]
+  },
+  "$line-height-xs": {
+    "to": ["--pd-font-caption-s-line-height"]
+  },
+
+  "$font-title-xxl": {
+    "to": ["--font-title-xxl-font"]
+  },
+  "$font-title-xl": {
+    "to": ["--font-title-xl-font"]
+  },
+  "$font-title-l": {
+    "to": ["--font-title-l-font"]
+  },
+  "$font-title-m": {
+    "to": ["--font-title-m-font"]
+  },
+  "$font-body-l": {
+    "to": ["--font-body-l-font"]
+  },
+  "$font-body": {
+    "to": ["--font-body-font"]
+  },
+  "$font-body-s": {
+    "to": ["--font-body-s-font"]
+  },
+  "$font-button": {
+    "to": ["--font-button-font"]
+  },
+  "$font-button-s": {
+    "to": ["--font-button-s-font"]
+  },
+  "$font-caption": {
+    "to": ["--font-caption-font"]
+  },
+  "$font-caption-s": {
+    "to": ["--font-caption-s-font"]
+  },
+  "$font-badge": {
+    "to": ["--font-badge-font"]
+  },
+  "$font-monospace": {
+    "to": ["--font-monospace-font"]
+  }
+}

@@ -1,0 +1,20 @@
+{
+    "$spacing-xs": {
+        "to": ["--pd-spacing-50"]
+    },
+    "$spacing-s": {
+        "to": ["--pd-spacing-100"]
+    },
+    "$spacing-m": {
+        "to": ["--pd-spacing-200"]
+    },
+    "$spacing-l": {
+        "to": ["--pd-spacing-300"]
+    },
+    "$spacing-xl": {
+        "to": ["--pd-spacing-400"]
+    },
+    "$spacing-xxl": {
+        "to": ["--pd-spacing-500"]
+    }
+}
