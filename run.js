@@ -62,6 +62,8 @@ const pipeStdioOpts = (cwd = process.cwd()) => ({ cwd, stdio: 'inherit' });
 run();
 
 function run() {
+  process.on('SIGTERM', () => process.exit(1));
+
   let {
     parser, //
     transformsToRun,
