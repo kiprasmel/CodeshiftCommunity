@@ -9,7 +9,8 @@
         "test": "jest"
     },
     "dependencies": {
-        "@codeshift/reusable-transforms": "*"
+        "@codeshift/reusable-transforms": "*",
+        "nice-comment": "0.12.1"
     },
     "devDependencies": {
         "@codeshift/test-utils": "*",

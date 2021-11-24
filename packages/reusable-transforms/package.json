@@ -10,6 +10,8 @@
         "test": "jest"
     },
     "dependencies": {
-        "@codeshift/utils": "*"
+        "@codeshift/utils": "*",
+        "nice-comment": "0.12.1",
+        "ts-dedent": "2.2.0"
     }
 }
