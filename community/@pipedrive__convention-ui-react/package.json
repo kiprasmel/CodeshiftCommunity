@@ -8,7 +8,9 @@
         "build": "tsc --build",
         "test": "jest"
     },
-    "dependencies": {},
+    "dependencies": {
+        "@codeshift/reusable-transforms": "*"
+    },
     "devDependencies": {
         "@codeshift/test-utils": "*",
         "@codeshift/utils": "*",
