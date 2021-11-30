@@ -1,0 +1,7 @@
+{
+    "rules": {
+        "@typescript-eslint/no-inferrable-types": 0,
+        "@typescript-eslint/no-angle-bracket-type-assertion": 0,
+        "@typescript-eslint/no-object-literal-type-assertion": 0
+    }
+}
