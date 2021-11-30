@@ -16,6 +16,8 @@ import { configsToRenameJsxComponent } from "./rename-jsx-component.config.cui-s
 import { addMissingJsxProp } from "@codeshift/reusable-transforms/src/add-missing-jsx-attribute";
 import { configsToAddMissingJsxAttribute } from "./add-missing-jsx-attribute.config.cui-specific";
 
+import { renameStyleTokens } from "./transforms/rename-style-tokens";
+
 /** end transforms */
 
 const transformsWithTypesafeConfigs = [
@@ -25,6 +27,7 @@ const transformsWithTypesafeConfigs = [
     transformerWithTypesafeConfigs(replaceJsxAttribute, configsToReplaceJsxPropAndItsValue),
     transformerWithTypesafeConfigs(renameJsxComponent, configsToRenameJsxComponent),
     transformerWithTypesafeConfigs(addMissingJsxProp, configsToAddMissingJsxAttribute),
+    transformerWithTypesafeConfigs(renameStyleTokens, []),
 ] as const;
 
 export const CUI4toCUI5 = createCodemodFromComposedTransforms(transformsWithTypesafeConfigs);
