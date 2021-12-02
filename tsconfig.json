@@ -21,7 +21,7 @@
     "esModuleInterop": true,
     "allowJs": true,
     "paths": {
-      "@codeshift/*": ["../packages/*/src", "../packages/reusable-transforms"]
+      "@codeshift/*": ["../packages/*/src"]
     }
   },
   "include": ["packages/**/*", "community/**/*", ".tmp/**/*", "scripts"],
