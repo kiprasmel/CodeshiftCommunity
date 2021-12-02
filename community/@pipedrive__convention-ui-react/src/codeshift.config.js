@@ -3,7 +3,7 @@ module.exports = {
     target: [],
     description: "Codemods for @pipedrive/convention-ui-react",
     transforms: {
-        "5.0.0": require.resolve("./5.0.0/transform"), //
+        "5.0.0": require.resolve("./5.0.0/codemod"), //
     },
     presets: {},
 };
