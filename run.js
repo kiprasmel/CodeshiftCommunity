@@ -58,11 +58,17 @@ const parseArgv = () => (
  *
  */
 const pipeStdioOpts = (cwd = process.cwd()) => ({ cwd, stdio: 'inherit' });
+const execSyncP = (cmd, opts) =>
+  cp.execSync(cmd, { ...opts, ...pipeStdioOpts() });
 
 run();
 
 function run() {
   process.on('SIGTERM', () => process.exit(1));
+
+  execSyncP('yarn clean');
+  execSyncP('yarn install');
+  execSyncP('yarn types:check');
 
   let {
     parser, //
@@ -82,7 +88,7 @@ function run() {
         const dir = path.dirname(t);
         const cmd = `yarn --cwd ${dir} build`;
         console.log('transform to run, build cmd', { cmd });
-        cp.execSync(cmd, { ...pipeStdioOpts() });
+        execSyncP(cmd);
         return t;
       }
     })
@@ -94,7 +100,7 @@ function run() {
   const cmdToExec = `${cliPath} --parser ${parser} -e ${extensions} -t ${transformsToRun} ${fileOrDirectoryToModify}`;
   console.log({ cmdToExec });
 
-  cp.execSync(cmdToExec, { ...pipeStdioOpts() });
+  execSyncP(cmdToExec);
 }
 
 function parseArrayFromCsv(csv = '') {
@@ -106,7 +112,7 @@ function parseArrayFromCsv(csv = '') {
 }
 
 function resolveTransformsFromShorthand([pathToCodemodPkg, transformVersion]) {
-  cp.execSync(`yarn --cwd ${pathToCodemodPkg} build`, { ...pipeStdioOpts() });
+  execSyncP(`yarn --cwd ${pathToCodemodPkg} build`);
   console.log('built');
 
   const pathToCodemodConfig = path.join(
