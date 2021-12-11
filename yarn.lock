@@ -1704,14 +1704,6 @@
     jest-diff "^26.0.0"
     pretty-format "^26.0.0"
 
-"@types/jscodeshift@^0.11.0":
-  version "0.11.2"
-  resolved "https://registry.npmjs.org/@types/jscodeshift/-/jscodeshift-0.11.2.tgz#cbad968d5bf6055529531364e57be119563e9685"
-  integrity sha512-CwgUni90VW+H3xc9Hekz/+ShEKPTvYbgVsDWCV4YksKoTKrWu9qfPpNaf7VDvbwjRp+PlkBJ7wZJNDpILzRiRw==
-  dependencies:
-    ast-types "^0.14.1"
-    recast "^0.20.3"
-
 "@types/jscodeshift@^0.11.2":
   version "0.11.3"
   resolved "https://registry.yarnpkg.com/@types/jscodeshift/-/jscodeshift-0.11.3.tgz#8dcab24ced39dcab1c8ff3461b3d171aafee3d48"

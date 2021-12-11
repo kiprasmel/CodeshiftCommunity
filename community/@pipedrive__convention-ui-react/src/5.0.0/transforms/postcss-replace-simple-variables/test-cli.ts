@@ -1,3 +1,5 @@
+#!/usr/bin/env ts-node-dev
+
 import postcss from "postcss";
 
 import * as colors from "./test-mappings/colors.json";
@@ -17,6 +19,23 @@ const example1 = `
 	overflow: hidden;
 	text-overflow: ellipsis;
 `;
+/**
+ * expected after transform (given current mappings):
+ *
+ * ```
+ *      font: var(--font-body-s-font);
+ *      font-size: var(--pd-font-title-xxl-font-size);
+ *      font-family: var(--pd-font-monospace-font-family);
+ *      color: var(--pd-color-fill-extra-strong);
+ *      line-height: var(--pd-font-caption-s-line-height);
+ *      padding-top: var(--pd-spacing-50);
+ *      min-height: 16px;
+ *      white-space: nowrap;
+ *      overflow: hidden;
+ *      text-overflow: ellipsis;
+ * ```
+ *
+ */
 
 const mappings = Object.assign({}, colors, fonts, spacings);
 
