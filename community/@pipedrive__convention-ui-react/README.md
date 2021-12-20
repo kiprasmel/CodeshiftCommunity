@@ -1,10 +1,13 @@
+<!-- 
 import { Meta } from '@storybook/addon-docs';
 import { ResourceLinks } from 'preview/components/ResourceLinks';
 
 <Meta title="Documentation / Automated migration with Codemods" />
+ -->
 
 # Automated migration with Codemods <!-- omit in toc -->
 
+<!-- 
 <ResourceLinks
 	github="https://github.com/pipedrive/CodeshiftCommunity/tree/fork/community/%40pipedrive__convention-ui-react"
 	githubRest={{
@@ -12,6 +15,7 @@ import { ResourceLinks } from 'preview/components/ResourceLinks';
 		target: '_blank',
 	}}
 />
+ -->
 
 <!--
 
