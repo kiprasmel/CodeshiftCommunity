@@ -116,11 +116,80 @@ function SomeComponent() {
  }
 ```
 
+Limitations:
+
+-   works only on components that are directly imported from "@pipedrive/convention-ui-react" & directly used.<hr />In
+    order to avoid false positives & clashes between similar components, the transform must detect that the component is
+    imported from CUI. Currently transforms work on a file-by-file basis _by design_ (parsers, transformer libraries
+    work this way).<br />We're [working](https://github.com/pipedrive/CodeshiftCommunity/pull/6) on additional
+    pre-processing utilities to allow enhancing codemods w/ full program awareness, but since it's a lengthy task, it's
+    lower in the priority list.
+
+-   namespace imports (`import * as C from "cui"`) are not yet supported, thus the previous limitation applies.<hr />
+
+Will not work (yet) - 1st limitation:
+
+```jsx
+import styled from 'styled-components';
+import { Button } from '@pipedrive/convention-ui-react';
+
+const WrappedButton = styled(Button)``;
+
+function SomeComponent() {
+	return <WrappedButton color="green">Click me</WrappedButton>;
+}
+```
+
+Will not work (yet) - 2nd limitation:
+
+```jsx
+import * as C from '@pipedrive/convention-ui-react';
+
+function SomeComponent() {
+	return <C.Button color="green">Click me</C.Button>;
+}
+```
+
+Will not work (yet?) - 1st limitation:
+
+```jsx
+// a.js
+import { Button } from '@pipedrive/convention-ui-react';
+export { Button as CUIButton };
+
+// b.js
+import { CUIButton } from './a';
+
+function SomeComponent() {
+	return <CUIButton color="green" />;
+}
+```
+
+Will not work (yet? if ever) - 1st limitation + prop forwarding:
+
+```jsx
+// a.js
+import { Button } from '@pipedrive/convention-ui-react';
+
+export function WrappedButton({ ...btnProps }) {
+	return <Button {...btnProps}>Click me</Button>;
+}
+
+// b.js
+import { WrappedButton } from './a';
+
+function SomeComponent() {
+	return <WrappedButton color="green" />;
+}
+```
+
 <!--
 	TODO more examples of prop-based shananigans, even tho not exactly related?
 -->
 
 ### 2. transformer "`rename-jsx-component`"
+
+Limitations: same as ["replace-jsx-attribute" transformer](#1-transformer-replace-jsx-attribute).
 
 <!-- #### n.1 -->
 
@@ -155,6 +224,8 @@ function SomeComponent() {
 ```
 
 ### 3. transformer "`add-missing-jsx-attribute`"
+
+Limitations: same as ["replace-jsx-attribute" transformer](#1-transformer-replace-jsx-attribute).
 
 <!-- #### npp.1 -->
 
@@ -192,6 +263,14 @@ function SomeComponent() {
 #### npp.1 -->
 
 ### 4. transformer "`rename-style-tokens`"
+
+Status: WIP
+
+Limitations:
+
+Since the style tokens were unique in cui v4, we no longer need to worry about clashes (unlike in the previous
+transforms), thus this transform does _not_ have any of the limitations of the previous transforms (for replacing
+values, at least. for regrouping imports, previous limitations still apply).
 
 <!-- TODO links -->
 
@@ -423,6 +502,10 @@ export const Foo = styled.div`
 ```
 
 ### 5. transformer "`postcss-replace-simple-variables`"
+
+Status: WIP
+
+Limitations: same as ["rename-style-tokens" (!) transformer](#4-transformer-rename-style-tokens).
 
 #### 5.1 Design tokens - PostCSS
 
