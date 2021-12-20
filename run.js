@@ -66,9 +66,11 @@ run();
 function run() {
   process.on('SIGTERM', () => process.exit(1));
 
-  execSyncP('yarn clean');
-  execSyncP('yarn install');
-  execSyncP('yarn types:check');
+  if (!!process.env.OLD_FULL_REBUILD) {
+    execSyncP('yarn clean');
+    execSyncP('yarn install');
+    execSyncP('yarn types:check');
+  }
 
   let {
     parser, //
@@ -85,10 +87,12 @@ function run() {
       if (t in shorthands) {
         return resolveTransformsFromShorthand(shorthands[t]);
       } else {
-        const dir = path.dirname(t);
-        const cmd = `yarn --cwd ${dir} build`;
-        console.log('transform to run, build cmd', { cmd });
-        execSyncP(cmd);
+        if (!!process.env.OLD_FULL_REBUILD) {
+          const dir = path.dirname(t);
+          const cmd = `yarn --cwd ${dir} build`;
+          console.log('transform to run, build cmd', { cmd });
+          execSyncP(cmd);
+        }
         return t;
       }
     })
@@ -112,12 +116,15 @@ function parseArrayFromCsv(csv = '') {
 }
 
 function resolveTransformsFromShorthand([pathToCodemodPkg, transformVersion]) {
-  execSyncP(`yarn --cwd ${pathToCodemodPkg} build`);
-  console.log('built');
+  if (!!process.env.OLD_FULL_REBUILD) {
+    execSyncP(`yarn --cwd ${pathToCodemodPkg} build`);
+    console.log('built');
+  }
 
   const pathToCodemodConfig = path.join(
     pathToCodemodPkg,
-    'dist',
+    // 'dist',
+    'src',
     'codeshift.config.js',
   );
   console.log({ pathToCodemodConfig });
@@ -129,8 +136,10 @@ function resolveTransformsFromShorthand([pathToCodemodPkg, transformVersion]) {
   const transformsApplicable = Object.entries(transforms)
     .map(([version, relPathToTransform]) => {
       if (version === transformVersion) {
-        return relPathToTransform;
+        // return relPathToTransform;
         // return path.join(pathToCodemodPkg, 'dist', relPathToTransform); // TODO must ensure it's compiled / run with ts-node / require from 'dist'
+
+        return path.join(pathToCodemodPkg, 'src', relPathToTransform);
       }
     })
     .filter(x => !!x);
