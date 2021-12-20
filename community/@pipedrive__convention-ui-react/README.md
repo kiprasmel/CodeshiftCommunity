@@ -1,4 +1,51 @@
+import { Meta } from '@storybook/addon-docs';
+import { ResourceLinks } from 'preview/components/ResourceLinks';
+
+<Meta title="Documentation / Automated migration with Codemods" />
+
 # Automated migration with Codemods <!-- omit in toc -->
+
+<ResourceLinks
+	github="https://github.com/pipedrive/CodeshiftCommunity/tree/fork/community/%40pipedrive__convention-ui-react"
+	githubRest={{
+		title: 'Codemods repo',
+		target: '_blank',
+	}}
+/>
+
+<!--
+
+I kinda dislike the idea of the content navigation thingie here.
+
+It encourages jumping "to what you need", meanwhile skipping
+the important pre-requisites.
+
+I'm trying to keep the document as lean as possible
+to avoid the need to jump/skip parts in the first place.
+
+
+
+- [Obligatory](#obligatory)
+- [Where to ask for help](#where-to-ask-for-help)
+- [Usage](#usage)
+	- [1. Setup (needed once)](#1-setup-needed-once)
+	- [2. Run](#2-run)
+- [Terminology](#terminology)
+- [Supported migrations (grouped by transformer)](#supported-migrations-grouped-by-transformer)
+	- [1. transformer "`replace-jsx-attribute`"](#1-transformer-replace-jsx-attribute)
+		- [1.1 React component props & values (attributes)](#11-react-component-props--values-attributes)
+	- [2. transformer "`rename-jsx-component`"](#2-transformer-rename-jsx-component)
+	- [3. transformer "`add-missing-jsx-attribute`"](#3-transformer-add-missing-jsx-attribute)
+	- [4. transformer "`rename-style-tokens`"](#4-transformer-rename-style-tokens)
+		- [4.1 Design tokens - AMD JS variables](#41-design-tokens---amd-js-variables)
+		- [4.2 Design tokens - JSON variables](#42-design-tokens---json-variables)
+		- [4.3 Design tokens - JSON variables (conventioned)](#43-design-tokens---json-variables-conventioned)
+		- [4.4 Design tokens - JS variables](#44-design-tokens---js-variables)
+	- [5. transformer "`postcss-replace-simple-variables`"](#5-transformer-postcss-replace-simple-variables)
+		- [5.1 Design tokens - PostCSS](#51-design-tokens---postcss)
+		- [5.2 Design tokens - SCSS](#52-design-tokens---scss)
+
+-->
 
 ## Obligatory
 
