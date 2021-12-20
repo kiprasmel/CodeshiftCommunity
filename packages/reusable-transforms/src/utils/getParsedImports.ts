@@ -24,6 +24,15 @@ export type ParsedImport = {
 
     path: ASTPath<namedTypes.ImportDeclaration | namedTypes.VariableDeclarator>;
     declarationPath?: ASTPath<namedTypes.VariableDeclaration>;
+
+    /**
+     * if destructured import/require, will have one of these
+     * (import -> specifier, require -> property)
+     */
+    specifier?: ASTPath<
+        namedTypes.ImportSpecifier | namedTypes.ImportDefaultSpecifier | namedTypes.ImportNamespaceSpecifier
+    >;
+    property?: ASTPath<namedTypes.Property>;
 } & (
     | {
           isDefaultImport: true;
@@ -88,11 +97,13 @@ export const getParsedImports = <T = any>(
             return;
         }
 
-        node.specifiers.forEach((specifier): void => {
-            if (j.ImportDefaultSpecifier.check(specifier)) {
-                /**
-                 * import Foo from "bar"; (default import)
-                 */
+        j(path)
+            /**
+             * import Foo from "bar"; (default import)
+             */
+            .find(j.ImportDefaultSpecifier)
+            .forEach((sp): void => {
+                const { node: specifier } = sp;
                 if (!j.Identifier.assert(specifier.local)) {
                     return never();
                 }
@@ -102,12 +113,18 @@ export const getParsedImports = <T = any>(
                     from,
                     isDefaultImport: true,
                     isImportedAs: specifier.local.name,
+                    specifier: sp,
                 });
-            } else if (j.ImportSpecifier.check(specifier)) {
-                /**
-                 * import { Foo }            from "bar"; (destructured import)
-                 * import { Foo as Bazooka } from "bar"; (destructured & aliased import)
-                 */
+            });
+
+        j(path)
+            /**
+             * import { Foo }            from "bar"; (destructured import)
+             * import { Foo as Bazooka } from "bar"; (destructured & aliased import)
+             */
+            .find(j.ImportSpecifier)
+            .forEach((sp): void => {
+                const { node: specifier } = sp;
 
                 if (!j.Identifier.assert(specifier.imported) || !j.Identifier.assert(specifier.local)) {
                     return never();
@@ -119,15 +136,15 @@ export const getParsedImports = <T = any>(
                     isDefaultImport: false,
                     wasExportedAs: specifier.imported.name,
                     isImportedAs: specifier.local.name,
+                    specifier: sp,
                 });
-            } else {
-                /**
-                 * TODO FIXME - handle them!
-                 */
-                // console.warn("unhandled import specifier - was neither a) default nor b) destructured", specifier);
-                return;
-            }
-        });
+            });
+
+        /**
+         * TODO FIXME - handle them!
+         */
+        // console.warn("unhandled import specifier - was neither a) default nor b) destructured", specifier);
+        return;
     }),
     /**
      * require
@@ -172,6 +189,7 @@ export const getParsedImports = <T = any>(
                     from,
                     isDefaultImport: true,
                     isImportedAs: node.id.name,
+                    // no property
                 });
             } else if (j.ObjectPattern.check(path.node.id)) {
                 /**
@@ -179,30 +197,35 @@ export const getParsedImports = <T = any>(
                  * const { Foo: Bazooka } = require("bar"); (destructured export)
                  */
 
-                path.node.id.properties.forEach((prop): void => {
-                    if (!j.Property.assert(prop)) {
-                        // TODO not sure
-                        return never();
-                    }
+                j(path)
+                    .find(j.Property)
+                    .forEach(p => {
+                        const { node: prop } = p;
 
-                    if (!j.Identifier.assert(prop.key)) {
-                        // TODO not sure
-                        return never();
-                    }
-                    if (!j.Identifier.assert(prop.value)) {
-                        // TODO not sure
-                        return never();
-                    }
+                        ret.push({
+                            path,
+                            declarationPath,
+                            from,
+                            isDefaultImport: false,
+                            wasExportedAs:
+                                ("name" in prop.key
+                                    ? prop.key.name?.toString()
+                                    : "value" in prop.key
+                                    ? prop.key.value?.toString()
+                                    : "") ?? "",
+                            isImportedAs:
+                                ("name" in prop.value
+                                    ? prop.value.name?.toString()
+                                    : "value" in prop.value
+                                    ? prop.value.value?.toString()
+                                    : "") ?? "",
 
-                    ret.push({
-                        path,
-                        declarationPath,
-                        from,
-                        isDefaultImport: false,
-                        wasExportedAs: prop.key.name,
-                        isImportedAs: prop.value.name,
+                            property: p,
+                            // property: j(prop)
+                            //     .at(0)
+                            //     .paths()[0],
+                        });
                     });
-                });
             } else {
                 /**
                  * TODO FIXME - handle them!
