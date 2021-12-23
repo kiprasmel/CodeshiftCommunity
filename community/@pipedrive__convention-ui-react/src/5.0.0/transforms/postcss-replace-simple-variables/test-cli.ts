@@ -2,9 +2,15 @@
 
 import postcss from "postcss";
 
-import * as colors from "./test-mappings/colors.json";
-import * as fonts from "./test-mappings/fonts.json";
-import * as spacings from "./test-mappings/spacings.json";
+import mappings from "../../mapping/tokenMapping.json";
+
+const mappingsMerged = {
+    ...mappings.css.colors,
+    ...mappings.css.elevations,
+    ...mappings.css.fonts,
+    ...mappings.css.spacings,
+} as const;
+
 import replaceSimpleVariables from "./index";
 
 const example1 = `
@@ -23,7 +29,7 @@ const example1 = `
  * expected after transform (given current mappings):
  *
  * ```
- *      font: var(--font-body-s-font);
+ *      font: var(--pd-font-body-s-font);
  *      font-size: var(--pd-font-title-xxl-font-size);
  *      font-family: var(--pd-font-monospace-font-family);
  *      color: var(--pd-color-fill-extra-strong);
@@ -37,9 +43,7 @@ const example1 = `
  *
  */
 
-const mappings = Object.assign({}, colors, fonts, spacings);
-
-postcss([replaceSimpleVariables({ mappings })])
+postcss([replaceSimpleVariables({ mappings: mappingsMerged as any })])
     .process(example1, { from: "example1" })
     .then(result => {
         console.log(result.css);

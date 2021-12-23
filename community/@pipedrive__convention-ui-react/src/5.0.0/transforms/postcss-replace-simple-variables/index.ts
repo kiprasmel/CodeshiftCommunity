@@ -9,17 +9,20 @@ interface PluginOptions {
     valueTransform?: (value: string) => string;
 }
 
-const addVarToValue = (value: string) => `var(${value})`;
-
 const postcssReplaceSimpleVariables: PluginCreator<PluginOptions> = (
-    { mappings, valueTransform = addVarToValue }: PluginOptions = { mappings: {} },
+    { mappings }: PluginOptions = { mappings: {} },
 ) => {
     return {
         postcssPlugin: "postcss-replace-simple-variables",
         Declaration(decl: Declaration) {
             if (decl.value.startsWith("$") && decl.value in mappings) {
-                const replacement = mappings[decl.value];
-                decl.value = valueTransform(replacement.to[0]);
+                let replacement: string | string[] = mappings[decl.value] as any;
+
+                if (Array.isArray(replacement)) {
+                    replacement = replacement[0];
+                }
+
+                decl.value = replacement;
             }
         },
     };
