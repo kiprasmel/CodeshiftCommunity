@@ -8,11 +8,14 @@ function clean(value: string) {
     .trim();
 }
 
+export const inlineCommentPrefix = `\n\nTODO: CODEMOD` as const;
+
 export function insertCommentBefore<NodeType = ASTNode>(
   j: core.JSCodeshift,
   path: Collection<NodeType>,
   message: string,
   prefix: string = ` TODO: (@codeshift)`,
+  beforeOrAfter: 'before' | 'after' = 'before',
 ) {
   const content = `${prefix} ${clean(message)} `;
 
@@ -30,8 +33,30 @@ export function insertCommentBefore<NodeType = ASTNode>(
     if (exists) return;
 
     // @ts-ignore
-    path.value.comments.push(j.commentBlock(content));
+    path.value.comments.push(
+      j.commentBlock(
+        content,
+        beforeOrAfter === 'before',
+        beforeOrAfter === 'after',
+      ),
+    );
   });
+}
+
+export function insertMultilineComment<NodeType = any>(
+  j: core.JSCodeshift,
+  path: Collection<NodeType>,
+  message: string,
+  prefix: string = inlineCommentPrefix.trim(),
+  beforeOrAfter: 'before' | 'after' = 'before',
+) {
+  insertCommentBefore(
+    j, //
+    path,
+    message + '\n\n*',
+    '*\n\n' + prefix,
+    beforeOrAfter,
+  );
 }
 
 export function insertCommentToStartOfFile<NodeType = any>(
