@@ -65,9 +65,17 @@ some [open PRs](https://github.com/pipedrive/CodeshiftCommunity/pulls?q=is:pr+is
 ## Where to ask for help
 
 For general migration help, use the [#migration-help-cui4-to-cui5](https://pipedrive.slack.com/archives/C02LK8Y583D)
-slack channel. <br /> (!) For codemods-specific problems, consider
+slack channel. <br />
+
+For codemods-specific problems, use the same channel (for now).
+
+<!--
+
+(!) For codemods-specific problems, consider
 [creating an issue](https://github.com/pipedrive/CodeshiftCommunity/issues/new) on github (soon™️) & only linking to it
 in slack.
+
+-->
 
 It's good to search for an existing question/issue before posting your own.
 
