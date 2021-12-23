@@ -7,6 +7,9 @@ import {
 
 /** begin transforms */
 
+import { replaceJsxAttribute } from "@codeshift/reusable-transforms/src/replace-jsx-attribute";
+import { configsToReplaceJsxPropAndItsValue } from "./replace-jsx-attribute.config.cui-specific";
+
 import { renameJsxComponent } from "@codeshift/reusable-transforms/src/rename-jsx-component";
 import { configsToRenameJsxComponent } from "./rename-jsx-component.config.cui-specific";
 
@@ -19,6 +22,7 @@ const transformsWithTypesafeConfigs = [
     /**
      * order matters here.
      */
+    transformerWithTypesafeConfigs(replaceJsxAttribute, configsToReplaceJsxPropAndItsValue),
     transformerWithTypesafeConfigs(renameJsxComponent, configsToRenameJsxComponent),
     transformerWithTypesafeConfigs(addMissingJsxProp, configsToAddMissingJsxAttribute),
 ] as const;
