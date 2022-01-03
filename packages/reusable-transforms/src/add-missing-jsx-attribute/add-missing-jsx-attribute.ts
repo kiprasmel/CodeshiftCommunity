@@ -75,14 +75,12 @@ export const addMissingJsxProp: Transformer<ConfigToAddMissingJsxProp> = (
         return;
     }
 
-    src.find(j.JSXElement, {
-        openingElement: {
-            name: {
-                name: config.exportedAs,
-            },
+    src.find(j.JSXOpeningElement, {
+        name: {
+            name: config.exportedAs,
         },
     })
-        .find(j.JSXOpeningElement)
+        //
         .forEach((path: ASTPath<JSXOpeningElement>): void => {
             const { node } = path;
 
