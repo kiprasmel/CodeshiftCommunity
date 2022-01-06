@@ -39,7 +39,9 @@ to avoid the need to jump/skip parts in the first place.
 	- [1. transformer "`replace-jsx-attribute`"](#1-transformer-replace-jsx-attribute)
 		- [1.1 React component props & values (attributes)](#11-react-component-props--values-attributes)
 	- [2. transformer "`rename-jsx-component`"](#2-transformer-rename-jsx-component)
+		- [2.1](#21)
 	- [3. transformer "`add-missing-jsx-attribute`"](#3-transformer-add-missing-jsx-attribute)
+		- [3.1](#31)
 	- [4. transformer "`rename-style-tokens`"](#4-transformer-rename-style-tokens)
 		- [4.1 Design tokens - AMD JS variables](#41-design-tokens---amd-js-variables)
 		- [4.2 Design tokens - JSON variables](#42-design-tokens---json-variables)
@@ -109,22 +111,37 @@ works.
 
 TL;DR:
 
--   `flow` is the parser; you'll always use this one.
+-   `flow` is the parser; you'll always use this one, at least for cui v5.
 
-    -   If you want to learn more on how it works, you can watch the "How codemods work - from first principles, w/
+	<!--
+		TODO: documentation instead
+	 -->
+    <!--
+	-   If you want to learn more on how it works, you can watch the "How codemods work - from first principles, w/
         sprinkles of jscodeshift" video (soon™️).
+	-->
 
--   `cui5` is the path to a codemod, or a shorthand for it (like in this case), which comes from the
-    [shorthands.json](https://github.com/pipedrive/CodeshiftCommunity/blob/fork/shorthands.json) file.
+-   `cui5` is the path to a codemod, or a shorthand for it (like in this case), which comes from the [shorthands.json](./../../shorthands.json) file.
+<!-- 
+	https://github.com/pipedrive/CodeshiftCommunity/blob/fork/shorthands.json
+-->
+<!-- 
+    -   in general, multiple paths/shorthands can be specified, separated by commas `,` - useful if you'd want to run multiple codemods one after another.
+
     -   in general, multiple paths/shorthands can be specified, separated by commas `,` - useful if you'd want to run
         only a few transforms instead of the whole codemod (soon™️).
+-->
 
 ## Terminology
 
 -   _Transform (noun) / transformer_ - a javascript function that, when called, modifies other code. Usually has 1
     specific purpose.
--   _Codemod (noun)_ - a combination of transforms. Transforms are called one after another, for each file.
-<!-- TODO source for the last sentence's statement -->
+-   _Codemod (noun)_ - a combination of transforms.
+	- technical notes:
+      -   there's only 1 codemod for cui so far - `cui5`, and it just combines various transforms with cui5-specific configurations.
+      -   when we say "codemods" (plural) to outsiders, what we're referring to is transforms. (a PM or a designer don't need to know the difference, but for exploring the codebase, it's useful to know).
+          -   and exploring the codebase as a codemods consumer is something you very well could do - especially if you want to modify [some](./src/5.0.0/add-missing-jsx-attribute.config.cui-specific.ts) configuration, or disable [some](src/5.0.0/codemod.ts) transform. ideally, you'd reach out to the maintainers ofc, but not being afraid to tinker with the tools you use is always a welcome trait.
+      -   transforms are combined (composed) and ran together, one after another, on each file. see [./src/5.0.0/codemod.ts](./src/5.0.0/codemod.ts).
 
 ## Supported migrations (grouped by transformer)
 
@@ -133,16 +150,11 @@ TL;DR:
 Transforms component props and values (attributes), as described in the
 [Migrating from CUI4](https://cui.pipedrive.tools/v5/?path=/docs/migrating-from-cui4-components) guide.
 
--   Transform's implementation:
-    [now](https://github.com/pipedrive/CodeshiftCommunity/blob/extraction-6-create-4th-transform-rename-style-tokens/packages/reusable-transforms/src/replace-jsx-attribute/replace-jsx-attribute.ts)
-    (while not merged),
-    [soon™️](https://github.com/pipedrive/CodeshiftCommunity/blob/fork/packages/reusable-transforms/src/replace-jsx-attribute/replace-jsx-attribute.ts)
-    (when merged).
+-   Transform's implementation: [../../packages/reusable-transforms/src/replace-jsx-attribute/replace-jsx-attribute.ts](../../packages/reusable-transforms/src/replace-jsx-attribute/replace-jsx-attribute.ts)
+<!-- https://github.com/pipedrive/CodeshiftCommunity/blob/fork/packages/reusable-transforms/src/replace-jsx-attribute/replace-jsx-attribute.ts -->
 
--   Transform's CUI-specific configs:
-    [now](https://github.com/pipedrive/CodeshiftCommunity/blob/extraction-6-create-4th-transform-rename-style-tokens/community/@pipedrive__convention-ui-react/src/5.0.0/replace-jsx-attribute.config.cui-specific.ts)
-    &
-    [soon](https://github.com/pipedrive/CodeshiftCommunity/blob/fork/community/@pipedrive__convention-ui-react/src/5.0.0/replace-jsx-attribute.config.cui-specific.ts).
+-   Transform's CUI-specific configs: [./src/5.0.0/replace-jsx-attribute.config.cui-specific.ts](./src/5.0.0/replace-jsx-attribute.config.cui-specific.ts)
+    <!-- https://github.com/pipedrive/CodeshiftCommunity/blob/fork/community/@pipedrive__convention-ui-react/src/5.0.0/replace-jsx-attribute.config.cui-specific.ts -->
 
 #### 1.1 React component props & values (attributes)
 
@@ -248,7 +260,11 @@ function SomeComponent() {
 
 ### 2. transformer "`rename-jsx-component`"
 
-Limitations: same as ["replace-jsx-attribute" transformer](#1-transformer-replace-jsx-attribute).
+-   Implementation: [../../packages/reusable-transforms/src/rename-jsx-component/rename-jsx-component.ts](../../packages/reusable-transforms/src/rename-jsx-component/rename-jsx-component.ts)
+
+-   CUI-specific configs: [./src/5.0.0/rename-jsx-component.config.cui-specific.ts](./src/5.0.0/rename-jsx-component.config.cui-specific.ts)
+
+-   Limitations: same as [replace-jsx-attribute](#1-transformer-replace-jsx-attribute) transform.
 
 <!-- #### n.1 -->
 
@@ -272,6 +288,8 @@ function SomeComponent() {
 ```
  -->
 
+#### 2.1
+
 ```diff
 -import { Toggle } from '@pipedrive/convention-ui-react';
 +import { Switch } from '@pipedrive/convention-ui-react';
@@ -284,7 +302,12 @@ function SomeComponent() {
 
 ### 3. transformer "`add-missing-jsx-attribute`"
 
-Limitations: same as ["replace-jsx-attribute" transformer](#1-transformer-replace-jsx-attribute).
+-   Implementation: [../../packages/reusable-transforms/src/add-missing-jsx-attribute/add-missing-jsx-attribute.ts](add-../../packages/reusable-transforms/src/add-missing-jsx-attribute/add-missing-jsx-attribute.ts)
+
+-   CUI-specific configs: [./src/5.0.0/add-missing-jsx-attribute.config.cui-specific.ts](./src/5.0.0/add-missing-jsx-attribute.config.cui-specific.ts)
+
+- Limitations: same as [replace-jsx-attribute](#1-transformer-replace-jsx-attribute) transform.
+
 
 <!-- #### npp.1 -->
 
@@ -308,6 +331,8 @@ function SomeComponent() {
 ```
  -->
 
+#### 3.1
+
 ```diff
  import { Panel } from '@pipedrive/convention-ui-react';
 
@@ -323,15 +348,11 @@ function SomeComponent() {
 
 ### 4. transformer "`rename-style-tokens`"
 
-Status: WIP
+- Status: see https://github.com/pipedrive/CodeshiftCommunity/pull/21
 
-Limitations:
-
-Since the style tokens were unique in cui v4, we no longer need to worry about clashes (unlike in the previous
-transforms), thus this transform does _not_ have any of the limitations of the previous transforms (for replacing
-values, at least. for regrouping imports, previous limitations still apply).
-
-<!-- TODO links -->
+- Limitations:
+	- TL;DR: none of the previous ones from [replace-jsx-attribute](#1-transformer-replace-jsx-attribute), except for import-regrouping.
+		- Since the style tokens were unique in cui v4, we no longer need to worry about clashes (unlike in the previous transforms), thus this transform does **not** have any of the limitations of the previous transforms (for replacing values, at least. for regrouping imports, previous limitations still apply).
 
 #### 4.1 Design tokens - AMD JS variables
 
@@ -562,9 +583,9 @@ export const Foo = styled.div`
 
 ### 5. transformer "`postcss-replace-simple-variables`"
 
-Status: WIP
+- Status: see https://github.com/pipedrive/CodeshiftCommunity/pull/22
 
-Limitations: same as ["rename-style-tokens" (!) transformer](#4-transformer-rename-style-tokens).
+- Limitations: same as [rename-style-tokens (!)](#4-transformer-rename-style-tokens) transform.
 
 #### 5.1 Design tokens - PostCSS
 
@@ -653,3 +674,7 @@ To:
 	padding: var(--pd-spacing-200);
 }
 ```
+
+---
+
+fin.
