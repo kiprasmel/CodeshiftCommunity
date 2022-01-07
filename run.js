@@ -107,6 +107,23 @@ function run() {
   console.log({ cmdToExec });
 
   execSyncP(cmdToExec);
+
+  if (!process.env.NO_CUI_POSTCSS) {
+    process.stdout.write('\n\nrunning css codemods now.\n\n\n');
+
+    const postcssCodemodRunnerPath = path.join(
+      __dirname,
+      'community',
+      '@pipedrive__convention-ui-react',
+      'src',
+      '5.0.0',
+      'transforms',
+      'postcss-replace-simple-variables',
+      'run-postcss-codemod',
+    );
+
+    execSyncP(`node ${postcssCodemodRunnerPath} ${fileOrDirectoryToModify}`);
+  }
 }
 
 function parseArrayFromCsv(csv = '') {

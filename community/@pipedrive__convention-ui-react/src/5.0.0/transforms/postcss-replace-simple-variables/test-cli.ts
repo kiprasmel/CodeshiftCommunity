@@ -11,7 +11,7 @@ const mappingsMerged = {
     ...mappings.css.spacings,
 } as const;
 
-import replaceSimpleVariables from "./index";
+import { postcssReplaceSimpleVariables } from "./postcss-transform-replace-simple-variables";
 
 const example1 = `
 	font: $font-body-s;
@@ -43,7 +43,7 @@ const example1 = `
  *
  */
 
-postcss([replaceSimpleVariables({ mappings: mappingsMerged as any })])
+postcss([postcssReplaceSimpleVariables({ mappings: mappingsMerged as any })])
     .process(example1, { from: "example1" })
     .then(result => {
         console.log(result.css);

@@ -30,4 +30,4 @@ const postcssReplaceSimpleVariables: PluginCreator<PluginOptions> = (
 
 postcssReplaceSimpleVariables.postcss = true;
 
-export default postcssReplaceSimpleVariables;
+export { postcssReplaceSimpleVariables };
