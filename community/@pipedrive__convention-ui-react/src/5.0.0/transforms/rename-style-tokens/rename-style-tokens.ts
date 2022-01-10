@@ -284,17 +284,22 @@ export const regroupImports: Transformer<{}, any> = (
                     //         },
                     // );
                 } else if (j.VariableDeclarator.check(im.path.node)) {
-                    // TODO `require`s
+                    if (im.isDefaultImport) {
+                        insertMultilineComment(
+                            j,
+                            j(im.path),
+                            dedent`
+								WARNING default imports not supported (yet?).
+							`,
+                        );
 
-                    insertMultilineComment(
-                        j,
-                        j(im.path),
-                        dedent`
-							TODO (to actual codemod creators) handle "require"s
-						`,
-                    );
+                        return [];
+                    }
 
-                    return [];
+                    return {
+                        key: im.wasExportedAs,
+                        value: im.isImportedAs,
+                    };
                 } else {
                     // FIXME
                     console.log({ im, path: im.path, node: im.path.node });
@@ -400,13 +405,39 @@ export const regroupImports: Transformer<{}, any> = (
          * the import/require did not exist before,
          * thus we need to create a new one.
          */
-        j(ASTPathForNewImport).replaceWith(
-            j.importDeclaration(
-                newDestructuredNames.map(name => j.importSpecifier(j.identifier(name.key), j.identifier(name.value))), //
-                j.literal(newImportPath), //
-            ),
-        );
-    }
 
-    return;
+        if (j.ImportDeclaration.check(ASTPathForNewImport.node)) {
+            j(ASTPathForNewImport).replaceWith(
+                j.importDeclaration(
+                    newDestructuredNames.map(name =>
+                        j.importSpecifier(j.identifier(name.key), j.identifier(name.value)),
+                    ), //
+                    j.literal(newImportPath), //
+                ),
+            );
+
+            return;
+        } else if (j.VariableDeclarator.check(ASTPathForNewImport.node)) {
+            j(ASTPathForNewImport).replaceWith(
+                j.variableDeclarator(
+                    j.objectPattern(
+                        newDestructuredNames.map(name =>
+                            j.property.from({
+                                kind: "init",
+                                key: j.identifier(name.key),
+                                value: j.identifier(name.value),
+                                shorthand: name.key === name.value,
+                            }),
+                        ),
+                    ),
+                    j.callExpression(j.identifier("require"), [j.literal(newImportPath)]),
+                ),
+            );
+
+            return;
+        } else {
+            console.error({ ASTPathForNewImport });
+            return never();
+        }
+    }
 };
