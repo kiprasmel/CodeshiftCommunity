@@ -2,6 +2,8 @@ import dedent from "ts-dedent";
 
 import { inlineTest } from "@codeshift/reusable-transforms/src/test-utils/inlineTest";
 
+import cui5map from "../../mapping/tokenMapping.json";
+
 import { renameStyleTokens } from "./rename-style-tokens"; // TODO regroupImports
 
 /**
@@ -40,10 +42,10 @@ describe("@pipedrive/convention-ui-react@5.0.0 rename-style-tokens transform (wi
 			import { colors, elevations, fonts, spacings } from "@pipedrive/convention-ui-react/dist/tokens";
 
 			export const Foo = styled.div\`
-				color: \${colors["textPrimary"]};
-				font: \${fonts["fontBodyFont"]};
-				box-shadow: \${elevations["raised"]};
-				padding: \${spacings["spacing200"]};
+				color: \${colors["${cui5map.js.colors["$color-black-hex"]}"]};
+				font: \${fonts["${cui5map.js.fonts["$font-body"]}"]};
+				box-shadow: \${elevations["${cui5map.js.elevations["$elevation-01"]}"]};
+				padding: \${spacings["${cui5map.js.spacings["$spacing-m"]}"]};
 			\`;
 		`,
     });
@@ -110,10 +112,10 @@ describe("@pipedrive/convention-ui-react@5.0.0 rename-style-tokens transform (wi
 			import { colors, elevations, fonts, spacings } from "@pipedrive/convention-ui-react/dist/tokens";
 
 			export const Foo = styled.div\`
-				color: \${colors["textPrimary"]};
-				font: \${fonts["fontBodyFont"]};
-				box-shadow: \${elevations["raised"]};
-				padding: \${spacings["spacing200"]};
+				color: \${colors["${cui5map.js.colors["$color-black-hex"]}"]};
+				font: \${fonts["${cui5map.js.fonts["$font-body"]}"]};
+				box-shadow: \${elevations["${cui5map.js.elevations["$elevation-01"]}"]};
+				padding: \${spacings["${cui5map.js.spacings["$spacing-m"]}"]};
 			\`;
 		`,
     });
@@ -143,10 +145,10 @@ describe("@pipedrive/convention-ui-react@5.0.0 rename-style-tokens transform (wi
 			import { colors, elevations, fonts, spacings } from "@pipedrive/convention-ui-react/dist/tokens";
 
 			export const Foo = styled.div\`
-				color: \${colors.textPrimary};
-				font: \${fonts.fontBodyFont};
-				box-shadow: \${elevations.raised};
-				padding: \${spacings.spacing200};
+				color: \${colors.${cui5map.js.colorsConventioned.black}};
+				font: \${fonts.${cui5map.js.fontsConventioned.fontBody}};
+				box-shadow: \${elevations.${cui5map.js.elevationsConventioned.elevation01}};
+				padding: \${spacings.${cui5map.js.spacingsConventioned.spacingM}};
 			\`;
 		`,
     });
@@ -210,10 +212,10 @@ describe("@pipedrive/convention-ui-react@5.0.0 rename-style-tokens transform (wi
 			import { colors, elevations, fonts, spacings } from "@pipedrive/convention-ui-react/dist/tokens";
 
 			export const Foo = styled.div\`
-				color: \${colors.textPrimary};
-				font: \${fonts.fontBodyFont};
-				box-shadow: \${elevations.raised};
-				padding: \${spacings.spacing200};
+				color: \${colors.${cui5map.js.colorsConventioned.black}};
+				font: \${fonts.${cui5map.js.fontsConventioned.fontBody}};
+				box-shadow: \${elevations.${cui5map.js.elevationsConventioned.elevation01}};
+				padding: \${spacings.${cui5map.js.spacingsConventioned.spacingM}};
 			\`;
 		`,
     });
