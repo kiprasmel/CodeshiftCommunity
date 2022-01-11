@@ -731,7 +731,3 @@ To:
   - (assuming `cd community/@pipedrive__convention-ui-react/` (here))
   - tests are usually co-located near the transforms.
 - my own notes i took while developing the codemods: http://kiprasmel.github.io/notes/codemods.html
-
---- 
-
-fin.
