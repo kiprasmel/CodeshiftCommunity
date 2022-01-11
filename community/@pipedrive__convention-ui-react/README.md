@@ -27,7 +27,9 @@ the important pre-requisites.
 I'm trying to keep the document as lean as possible
 to avoid the need to jump/skip parts in the first place.
 
+-->
 
+If you're here for the first time - you'll be better off reading everything top to bottom, at least up until the "supported migrations" part. But, just in case:
 
 - [Obligatory](#obligatory)
 - [Where to ask for help](#where-to-ask-for-help)
@@ -36,22 +38,26 @@ to avoid the need to jump/skip parts in the first place.
 	- [2. Run](#2-run)
 - [Terminology](#terminology)
 - [Supported migrations (grouped by transformer)](#supported-migrations-grouped-by-transformer)
-	- [1. transformer "`replace-jsx-attribute`"](#1-transformer-replace-jsx-attribute)
+	- [1. transformer `replace-jsx-attribute`](#1-transformer-replace-jsx-attribute)
 		- [1.1 React component props & values (attributes)](#11-react-component-props--values-attributes)
-	- [2. transformer "`rename-jsx-component`"](#2-transformer-rename-jsx-component)
+		- [Limitations](#limitations)
+	- [2. transformer `rename-jsx-component`](#2-transformer-rename-jsx-component)
 		- [2.1](#21)
-	- [3. transformer "`add-missing-jsx-attribute`"](#3-transformer-add-missing-jsx-attribute)
+	- [3. transformer `add-missing-jsx-attribute`](#3-transformer-add-missing-jsx-attribute)
 		- [3.1](#31)
-	- [4. transformer "`rename-style-tokens`"](#4-transformer-rename-style-tokens)
+	- [4. transformer `rename-style-tokens`](#4-transformer-rename-style-tokens)
+		- [Status](#status)
+		- [Limitations](#limitations-1)
 		- [4.1 Design tokens - AMD JS variables](#41-design-tokens---amd-js-variables)
 		- [4.2 Design tokens - JSON variables](#42-design-tokens---json-variables)
 		- [4.3 Design tokens - JSON variables (conventioned)](#43-design-tokens---json-variables-conventioned)
 		- [4.4 Design tokens - JS variables](#44-design-tokens---js-variables)
-	- [5. transformer "`postcss-replace-simple-variables`"](#5-transformer-postcss-replace-simple-variables)
+	- [5. transformer `postcss-replace-simple-variables`](#5-transformer-postcss-replace-simple-variables)
+		- [Status](#status-1)
+		- [Limitations](#limitations-2)
 		- [5.1 Design tokens - PostCSS](#51-design-tokens---postcss)
 		- [5.2 Design tokens - SCSS](#52-design-tokens---scss)
 
--->
 
 ## Obligatory
 
@@ -145,7 +151,7 @@ TL;DR:
 
 ## Supported migrations (grouped by transformer)
 
-### 1. transformer "`replace-jsx-attribute`"
+### 1. transformer `replace-jsx-attribute`
 
 Transforms component props and values (attributes), as described in the
 [Migrating from CUI4](https://cui.pipedrive.tools/v5/?path=/docs/migrating-from-cui4-components) guide.
@@ -187,7 +193,7 @@ function SomeComponent() {
  }
 ```
 
-Limitations:
+#### Limitations
 
 -   works only on components that are directly imported from "@pipedrive/convention-ui-react" & directly used.<hr />In
     order to avoid false positives & clashes between similar components, the transform must detect that the component is
@@ -258,7 +264,7 @@ function SomeComponent() {
 	TODO more examples of prop-based shananigans, even tho not exactly related?
 -->
 
-### 2. transformer "`rename-jsx-component`"
+### 2. transformer `rename-jsx-component`
 
 -   Implementation: [../../packages/reusable-transforms/src/rename-jsx-component/rename-jsx-component.ts](../../packages/reusable-transforms/src/rename-jsx-component/rename-jsx-component.ts)
 
@@ -300,7 +306,7 @@ function SomeComponent() {
  }
 ```
 
-### 3. transformer "`add-missing-jsx-attribute`"
+### 3. transformer `add-missing-jsx-attribute`
 
 -   Implementation: [../../packages/reusable-transforms/src/add-missing-jsx-attribute/add-missing-jsx-attribute.ts](add-../../packages/reusable-transforms/src/add-missing-jsx-attribute/add-missing-jsx-attribute.ts)
 
@@ -346,13 +352,17 @@ function SomeComponent() {
 
 #### npp.1 -->
 
-### 4. transformer "`rename-style-tokens`"
+### 4. transformer `rename-style-tokens`
 
-- Status: see https://github.com/pipedrive/CodeshiftCommunity/pull/21
+#### Status
 
-- Limitations:
-	- TL;DR: none of the previous ones from [replace-jsx-attribute](#1-transformer-replace-jsx-attribute), except for import-regrouping.
-		- Since the style tokens were unique in cui v4, we no longer need to worry about clashes (unlike in the previous transforms), thus this transform does **not** have any of the limitations of the previous transforms (for replacing values, at least. for regrouping imports, previous limitations still apply).
+see https://github.com/pipedrive/CodeshiftCommunity/pull/21
+
+#### Limitations
+
+TL;DR: none of the previous ones from [replace-jsx-attribute](#1-transformer-replace-jsx-attribute), except for import-regrouping.
+
+Since the style tokens were unique in cui v4, we no longer need to worry about clashes (unlike in the previous transforms), thus this transform does **not** have any of the limitations of the previous transforms (for replacing values, at least. for regrouping imports, previous limitations still apply).
 
 #### 4.1 Design tokens - AMD JS variables
 
@@ -581,11 +591,15 @@ export const Foo = styled.div`
  `;
 ```
 
-### 5. transformer "`postcss-replace-simple-variables`"
+### 5. transformer `postcss-replace-simple-variables`
 
-- Status: see https://github.com/pipedrive/CodeshiftCommunity/pull/22
+#### Status
 
-- Limitations: same as [rename-style-tokens (!)](#4-transformer-rename-style-tokens) transform.
+see https://github.com/pipedrive/CodeshiftCommunity/pull/22
+
+#### Limitations
+
+same as [rename-style-tokens (!)](#4-transformer-rename-style-tokens) transform.
 
 #### 5.1 Design tokens - PostCSS
 
