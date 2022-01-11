@@ -1,5 +1,58 @@
 # @codeshift/cli
 
+## 0.7.6
+
+### Patch Changes
+
+- f6bd632: Fixes --help command. Top-level options will now be shown correctly
+
+## 0.7.5
+
+### Patch Changes
+
+- 5133c81: Minor fix to list command
+- cee218e: Update generated project dependencies to avoid colors.js vulnrability.
+
+## 0.7.4
+
+### Patch Changes
+
+- 276e5bb: Return if list finds an invalid package
+
+## 0.7.3
+
+### Patch Changes
+
+- e776f9c: Fixes colors.js vulnrability by bumping jscodeshift
+- Updated dependencies [e776f9c]
+  - @codeshift/initializer@0.1.8
+  - @codeshift/validator@0.2.3
+
+## 0.7.2
+
+### Patch Changes
+
+- 1cf710f: Fixes how the CLI renders errors to users
+
+## 0.7.1
+
+### Patch Changes
+
+- caaaf9a: Locks version of colors.js to avoid vulnrability
+- 728624f: Init command can now be called without the transform or preset flag and output an empty directory
+- 4781125: List CLI command no longer exits on error. Instead it will log a message
+- 450c977: Adds new primary CLI alias `codeshift` (as opposed to just `codeshift-cli`)
+- Updated dependencies [caaaf9a]
+- Updated dependencies [728624f]
+  - @codeshift/initializer@0.1.7
+  - @codeshift/validator@0.2.2
+
+## 0.7.0
+
+### Minor Changes
+
+- 2f5f72f: Adds the ability to specify a comma seperated list of transforms via the -t flag
+
 ## 0.6.3
 
 ### Patch Changes

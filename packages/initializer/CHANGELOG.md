@@ -1,5 +1,22 @@
 # @codeshift/initializer
 
+## 0.1.8
+
+### Patch Changes
+
+- e776f9c: Fixes colors.js vulnrability by bumping jscodeshift
+- Updated dependencies [e776f9c]
+  - @codeshift/utils@0.1.5
+
+## 0.1.7
+
+### Patch Changes
+
+- caaaf9a: Locks version of colors.js to avoid vulnrability
+- 728624f: Init command can now be called without the transform or preset flag and output an empty directory
+- Updated dependencies [caaaf9a]
+  - @codeshift/utils@0.1.4
+
 ## 0.1.6
 
 ### Patch Changes

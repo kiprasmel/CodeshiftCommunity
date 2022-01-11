@@ -1,5 +1,22 @@
 # @codeshift/publisher
 
+## 0.1.8
+
+### Patch Changes
+
+- e776f9c: Fixes colors.js vulnrability by bumping jscodeshift
+- Updated dependencies [e776f9c]
+  - @codeshift/initializer@0.1.8
+
+## 0.1.7
+
+### Patch Changes
+
+- caaaf9a: Locks version of colors.js to avoid vulnrability
+- Updated dependencies [caaaf9a]
+- Updated dependencies [728624f]
+  - @codeshift/initializer@0.1.7
+
 ## 0.1.6
 
 ### Patch Changes

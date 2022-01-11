@@ -1,12 +1,12 @@
 {
   "name": "@codeshift/test-utils",
-  "version": "0.1.2",
+  "version": "0.1.4",
   "main": "dist/codeshift-test-utils.cjs.js",
   "module": "dist/codeshift-test-utils.esm.js",
   "types": "dist/codeshift-test-utils.cjs.d.ts",
   "license": "MIT",
   "repository": "https://github.com/CodeshiftCommunity/CodeshiftCommunity/tree/master/packages/test-utils",
   "dependencies": {
-    "jscodeshift": "^0.12.0"
+    "jscodeshift": "^0.13.1"
   }
 }

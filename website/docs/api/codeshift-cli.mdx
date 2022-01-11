@@ -21,30 +21,30 @@ The cli allows you to run transforms either from the [community folder](https://
 
 We recommend running the CLI with `$ npx` to ensure you always have the latest version.
 
-`$ npx codeshift-cli --packages mylib@1.0.0 /project/src`
+`$ npx @codeshift/cli --packages mylib@1.0.0 /project/src`
 
-But it can also be installed normally:
-
-`$ npm install --save-dev @codeshift/cli` or `yarn add -D @codeshift/cli`
-
-Or globally:
+But it can also be installed globally:
 
 `$ npm install -g @codeshift/cli` or `yarn global add @codeshift/cli`
 
 and run with:
 
-`$ codeshift-cli`
+`$ codeshift` or `$ codeshift-cli`
 
 ## Options
 
 ### --transform, -t
 
-The transform to run, transforms can be either a single file or directory with an index.
+Allows you to execute local transform file(s).
+
+- Can be provided with a comma-separated list (see example below).
+- Transforms can be either a single file or directory containing an "index" file.
 
 **example:**
 
-- `$ codeshift-cli --transform codemods/my-special-mod /project/src/file.js`
-- `$ codeshift-cli --transform codemods/my-special-mod/index.ts /project/src/file.js`
+- `$ codeshift --transform codemods/my-special-mod /project/src/file.js`
+- `$ codeshift --transform codemods/my-special-mod/index.ts /project/src/file.js`
+- `$ codeshift --transform path/to/transform1.ts,path/to/transform2.ts,path/to/transform3.ts /project/src/file.js`
 
 ### --packages
 
@@ -52,8 +52,8 @@ Runs transforms for the specified comma separated list of packages, optionally i
 
 **example:**
 
-- `$ codeshift-cli --packages @atlaskit/button /project/src`
-- `$ codeshift-cli --packages @atlaskit/button@3.0.0,@atlaskit/range@4.0.0 /project/src`
+- `$ codeshift --packages @atlaskit/button /project/src`
+- `$ codeshift --packages @atlaskit/button@3.0.0,@atlaskit/range@4.0.0 /project/src`
 
 ### --parser, -p
 
@@ -69,8 +69,8 @@ Parser to use for parsing the source files you are code modding.
 
 **example:**
 
-- `$ codeshift-cli --parser tsx /project/src/file.ts`
-- `$ codeshift-cli -p babel /project/src/file.js`
+- `$ codeshift --parser tsx /project/src/file.ts`
+- `$ codeshift -p babel /project/src/file.js`
 
 ### --extensions, -e
 
@@ -78,8 +78,8 @@ Transform files with these file extensions (comma separated list) (default: js)
 
 **example:**
 
-- `$ codeshift-cli --extensions ts,tsx /project/src/file.js`
-- `$ codeshift-cli -e js /project/src/file.js`
+- `$ codeshift --extensions ts,tsx /project/src/file.js`
+- `$ codeshift -e js /project/src/file.js`
 
 ### --ignore-pattern
 
@@ -87,7 +87,7 @@ Ignore files that match a provided glob expression
 
 **example:**
 
-- `$ codeshift-cli --ignore-pattern node_modules /project/src/file.js`
+- `$ codeshift --ignore-pattern node_modules /project/src/file.js`
 
 ### --version, -v
 
@@ -95,8 +95,8 @@ Get current version number
 
 **example:**
 
-- `$ codeshift-cli --version`
-- `$ codeshift-cli -v`
+- `$ codeshift --version`
+- `$ codeshift -v`
 
 ### --help
 
@@ -104,45 +104,84 @@ Print all help text to the command line
 
 **example:**
 
-- `$ codeshift-cli --help`
+- `$ codeshift --help`
 
-## Commands
+## list
 
-### list
-
-Lists available codemods for the provided packages
+Subcommand that lists available codemods for the provided packages
 
 **example:**
 
 Print a list of available codemods for a single package
 
-- `$ codeshift-cli list mylib`
+- `$ codeshift list mylib`
 
 Print a list of available codemods for multiple packages
 
-- `$ codeshift-cli list mylib, @material-ui/button`
+- `$ codeshift list @atlaskit/avatar @emotion/monorepo`
 
-### init
+## init
 
-Generates a new codemod at your desired path
+Subcommand that generates a new codemod at your desired path
 
 **example:**
 
-Create a new codemod package called foobar with a transform for version 10
+Create a new codeshift package called foobar with a transform for version 10
 on the Desktop
 
-- `$ codeshift-cli init --package-name="foobar" --version="10.0.0" ~/Desktop`
+- `$ codeshift init --package-name="foobar" --version="10.0.0" ~/Desktop`
 
-### validate
+Create an empty codeshift package called foobar on the Desktop
 
-Validates a codemod package at the desired path.
+- `$ codeshift init --package-name="foobar" ~/Desktop`
+
+Create an empty codeshift package called foobar in the current directory
+
+- `$ codeshift init --package-name="foobar"`
+
+### --package-name
+
+The name of the package/directory to be created.
+
+**example:**
+
+Create an empty codemod package called foobar with a transform.
+
+When `--version` and `--preset` flags are omitted no transforms will be generated.
+To generate tranforms after already generating the directory, simply rerun the command with the necessary flags.
+
+- `$ codeshift init --package-name="foobar" ~/Desktop`
+
+### --version (optional)
+
+A semver-compatible string. Will be used to generate mock transform files and configuration.
+
+**example:**
+
+Create a codemod package called foobar with a versioned transform.
+
+- `$ codeshift init --package-name="foobar" --version="10.0.0" ~/Desktop`
+
+### --preset (optional)
+
+A kebab-cased string. Will be used to generate mock transform files and configuration.
+
+**example:**
+
+Create a codemod package called foobar with a preset.
+
+- `$ codeshift init --package-name="foobar" --preset="sort-imports" ~/Desktop`
+
+## validate
+
+Subcommand that validates a codemod package at the desired path.
 
 **example:**
 
 Validate a codemod package called "my-codemods".
 
-- `$ codeshift-cli validate ./codemods/my-codemods`
+- `$ codeshift validate ./codemods/my-codemods`
 
 Validate a codemod package from the current working directory
 
-- `$ codeshift-cli validate`
+- `$ codeshift validate`

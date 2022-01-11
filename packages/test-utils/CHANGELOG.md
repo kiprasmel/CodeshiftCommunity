@@ -1,5 +1,17 @@
 # @codeshift/test-utils
 
+## 0.1.4
+
+### Patch Changes
+
+- e776f9c: Fixes colors.js vulnrability by bumping jscodeshift
+
+## 0.1.3
+
+### Patch Changes
+
+- caaaf9a: Locks version of colors.js to avoid vulnrability
+
 ## 0.1.2
 
 ### Patch Changes
