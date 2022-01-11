@@ -27,7 +27,13 @@ the important pre-requisites.
 I'm trying to keep the document as lean as possible
 to avoid the need to jump/skip parts in the first place.
 
+-->
 
+If you're here for the first time - you'll be better off reading everything
+<br/>
+top to bottom, at least up until the "supported migrations" part.
+
+But, just in case:
 
 - [Obligatory](#obligatory)
 - [Where to ask for help](#where-to-ask-for-help)
@@ -36,22 +42,26 @@ to avoid the need to jump/skip parts in the first place.
 	- [2. Run](#2-run)
 - [Terminology](#terminology)
 - [Supported migrations (grouped by transformer)](#supported-migrations-grouped-by-transformer)
-	- [1. transformer "`replace-jsx-attribute`"](#1-transformer-replace-jsx-attribute)
+	- [1. transformer `replace-jsx-attribute`](#1-transformer-replace-jsx-attribute)
 		- [1.1 React component props & values (attributes)](#11-react-component-props--values-attributes)
-	- [2. transformer "`rename-jsx-component`"](#2-transformer-rename-jsx-component)
+		- [Limitations](#limitations)
+	- [2. transformer `rename-jsx-component`](#2-transformer-rename-jsx-component)
 		- [2.1](#21)
-	- [3. transformer "`add-missing-jsx-attribute`"](#3-transformer-add-missing-jsx-attribute)
+	- [3. transformer `add-missing-jsx-attribute`](#3-transformer-add-missing-jsx-attribute)
 		- [3.1](#31)
-	- [4. transformer "`rename-style-tokens`"](#4-transformer-rename-style-tokens)
+	- [4. transformer `rename-style-tokens`](#4-transformer-rename-style-tokens)
+		- [Limitations](#limitations-1)
 		- [4.1 Design tokens - AMD JS variables](#41-design-tokens---amd-js-variables)
 		- [4.2 Design tokens - JSON variables](#42-design-tokens---json-variables)
 		- [4.3 Design tokens - JSON variables (conventioned)](#43-design-tokens---json-variables-conventioned)
 		- [4.4 Design tokens - JS variables](#44-design-tokens---js-variables)
-	- [5. transformer "`postcss-replace-simple-variables`"](#5-transformer-postcss-replace-simple-variables)
+	- [5. transformer `postcss-replace-simple-variables`](#5-transformer-postcss-replace-simple-variables)
+		- [Status: WIP](#status-wip)
+		- [Limitations](#limitations-2)
 		- [5.1 Design tokens - PostCSS](#51-design-tokens---postcss)
 		- [5.2 Design tokens - SCSS](#52-design-tokens---scss)
+- [Meta](#meta)
 
--->
 
 ## Obligatory
 
@@ -111,16 +121,6 @@ works.
 
 TL;DR:
 
--   `flow` is the parser; you'll always use this one, at least for cui v5.
-
-	<!--
-		TODO: documentation instead
-	 -->
-    <!--
-	-   If you want to learn more on how it works, you can watch the "How codemods work - from first principles, w/
-        sprinkles of jscodeshift" video (soon™️).
-	-->
-
 -   `cui5` is the path to a codemod, or a shorthand for it (like in this case), which comes from the [shorthands.json](./../../shorthands.json) file.
 <!-- 
 	https://github.com/pipedrive/CodeshiftCommunity/blob/fork/shorthands.json
@@ -131,6 +131,36 @@ TL;DR:
     -   in general, multiple paths/shorthands can be specified, separated by commas `,` - useful if you'd want to run
         only a few transforms instead of the whole codemod (soon™️).
 -->
+
+-   `flow` is the parser; you'll ~~always~~ use this one, at least for cui v5.
+
+NB: (technical) we [received a report](https://pipedrive.slack.com/archives/C02LK8Y583D/p1641893745002800) that when using the `flow` parser, with some files codemods can error:
+
+```
+Transformation error (did not recognize object of type "IndexedAccessType")
+```
+
+if that's the case, you can try different parsers, namely, `tsx`:
+
+```sh
+./run.js tsx cui5 ../path/to/project/src/
+```
+
+though beware that:
+- you're stepping into an un-tested teritory (our codemods are tested only [with the `flow` parser](../../packages/reusable-transforms/src/test-utils/inlineTest.ts#L48))
+- with the `tsx` transform specifically, it doesn't work when you're importing with `require` instead of `import`
+
+if you get the above error, for best results, you can try first running with the `flow` parser, committing the changes, and then running again with the `tsx` parser - to take care of the files where `flow` errored and couldn't run.
+  - note that until we make the codemods idempotent, they, after running _more than once_, can add a few comments with warnings that an unexpected value was found - you can ignore these warnings (these warnings are useful for the first run only).
+
+<!--
+	TODO: documentation instead
+	-->
+<!--
+-   If you want to learn more on how it works, you can watch the "How codemods work - from first principles, w/
+	sprinkles of jscodeshift" video (soon™️).
+-->
+
 
 ## Terminology
 
@@ -145,7 +175,7 @@ TL;DR:
 
 ## Supported migrations (grouped by transformer)
 
-### 1. transformer "`replace-jsx-attribute`"
+### 1. transformer `replace-jsx-attribute`
 
 Transforms component props and values (attributes), as described in the
 [Migrating from CUI4](https://cui.pipedrive.tools/v5/?path=/docs/migrating-from-cui4-components) guide.
@@ -187,7 +217,7 @@ function SomeComponent() {
  }
 ```
 
-Limitations:
+#### Limitations
 
 -   works only on components that are directly imported from "@pipedrive/convention-ui-react" & directly used.<hr />In
     order to avoid false positives & clashes between similar components, the transform must detect that the component is
@@ -258,7 +288,7 @@ function SomeComponent() {
 	TODO more examples of prop-based shananigans, even tho not exactly related?
 -->
 
-### 2. transformer "`rename-jsx-component`"
+### 2. transformer `rename-jsx-component`
 
 -   Implementation: [../../packages/reusable-transforms/src/rename-jsx-component/rename-jsx-component.ts](../../packages/reusable-transforms/src/rename-jsx-component/rename-jsx-component.ts)
 
@@ -300,7 +330,7 @@ function SomeComponent() {
  }
 ```
 
-### 3. transformer "`add-missing-jsx-attribute`"
+### 3. transformer `add-missing-jsx-attribute`
 
 -   Implementation: [../../packages/reusable-transforms/src/add-missing-jsx-attribute/add-missing-jsx-attribute.ts](add-../../packages/reusable-transforms/src/add-missing-jsx-attribute/add-missing-jsx-attribute.ts)
 
@@ -346,13 +376,13 @@ function SomeComponent() {
 
 #### npp.1 -->
 
-### 4. transformer "`rename-style-tokens`"
+### 4. transformer `rename-style-tokens`
 
-- Status: see https://github.com/pipedrive/CodeshiftCommunity/pull/21
+#### Limitations
 
-- Limitations:
-	- TL;DR: none of the previous ones from [replace-jsx-attribute](#1-transformer-replace-jsx-attribute), except for import-regrouping.
-		- Since the style tokens were unique in cui v4, we no longer need to worry about clashes (unlike in the previous transforms), thus this transform does **not** have any of the limitations of the previous transforms (for replacing values, at least. for regrouping imports, previous limitations still apply).
+TL;DR: none of the previous ones from [replace-jsx-attribute](#1-transformer-replace-jsx-attribute), except for import-regrouping.
+
+Since the style tokens were unique in cui v4, we no longer need to worry about clashes (unlike in the previous transforms), thus this transform does **not** have any of the limitations of the previous transforms (for replacing values, at least. for regrouping imports, previous limitations still apply).
 
 #### 4.1 Design tokens - AMD JS variables
 
@@ -581,11 +611,15 @@ export const Foo = styled.div`
  `;
 ```
 
-### 5. transformer "`postcss-replace-simple-variables`"
+### 5. transformer `postcss-replace-simple-variables`
 
-- Status: see https://github.com/pipedrive/CodeshiftCommunity/pull/22
+#### Status: WIP
 
-- Limitations: same as [rename-style-tokens (!)](#4-transformer-rename-style-tokens) transform.
+see https://github.com/pipedrive/CodeshiftCommunity/pull/22
+
+#### Limitations
+
+same as [rename-style-tokens (!)](#4-transformer-rename-style-tokens) transform.
 
 #### 5.1 Design tokens - PostCSS
 
@@ -676,5 +710,28 @@ To:
 ```
 
 ---
+
+## Meta
+ 
+- AST explorer: https://astexplorer.net/
+  - parser: `flow`, transformer: `jscodeshift`
+- Codeshift Community:
+  - http://codeshiftcommunity.com/
+  - http://github.com/CodeshiftCommunity/CodeshiftCommunity/ (upstream)
+- where `cui5` comes from: [../../shorthands.json](../../shorthands.json)
+- main entrypoint for the `cui5` codemod: [./src/5.0.0/codemod.ts](./src/5.0.0/codemod.ts)
+  - cui-specific configs for transforms: `./src/5.0.0/*.config.cui-specific.ts`
+  - the `cui5map` - mapping of old->new values for css variables (tokens): [./src/5.0.0/mapping/tokenMapping.json](./src/5.0.0/mapping/tokenMapping.json)
+    - note - do not update manually - it's automatically exported from figma.
+- some transforms that the `cui5` codemod uses: [./src/5.0.0/transforms/](./src/5.0.0/transforms/)
+  - boilerplate if you want to write your own transform: [./src/boilerplate-for-transform/](./src/boilerplate-for-transform/)
+- other, reusable transforms, that `cui5` also uses: [../../packages/reusable-transforms/](../../packages/reusable-transforms/)
+- running tests (for cui & reusable transforms):
+  - `yarn test`
+  - (assuming `cd community/@pipedrive__convention-ui-react/` (here))
+  - tests are usually co-located near the transforms.
+- my own notes i took while developing the codemods: http://kiprasmel.github.io/notes/codemods.html
+
+--- 
 
 fin.
