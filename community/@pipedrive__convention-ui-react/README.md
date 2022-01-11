@@ -29,7 +29,11 @@ to avoid the need to jump/skip parts in the first place.
 
 -->
 
-If you're here for the first time - you'll be better off reading everything top to bottom, at least up until the "supported migrations" part. But, just in case:
+If you're here for the first time - you'll be better off reading everything
+<br/>
+top to bottom, at least up until the "supported migrations" part.
+
+But, just in case:
 
 - [Obligatory](#obligatory)
 - [Where to ask for help](#where-to-ask-for-help)
@@ -57,6 +61,7 @@ If you're here for the first time - you'll be better off reading everything top 
 		- [Limitations](#limitations-2)
 		- [5.1 Design tokens - PostCSS](#51-design-tokens---postcss)
 		- [5.2 Design tokens - SCSS](#52-design-tokens---scss)
+- [Meta](#meta)
 
 
 ## Obligatory
@@ -690,5 +695,28 @@ To:
 ```
 
 ---
+
+## Meta
+ 
+- AST explorer: https://astexplorer.net/
+  - parser: `flow`, transformer: `jscodeshift`
+- Codeshift Community:
+  - http://codeshiftcommunity.com/
+  - http://github.com/CodeshiftCommunity/CodeshiftCommunity/ (upstream)
+- where `cui5` comes from: [../../shorthands.json](../../shorthands.json)
+- main entrypoint for the `cui5` codemod: [./src/5.0.0/codemod.ts](./src/5.0.0/codemod.ts)
+  - cui-specific configs for transforms: `./src/5.0.0/*.config.cui-specific.ts`
+  - the `cui5map` - mapping of old->new values for css variables (tokens): [./src/5.0.0/mapping/tokenMapping.json](./src/5.0.0/mapping/tokenMapping.json)
+    - note - do not update manually - it's automatically exported from figma.
+- some transforms that the `cui5` codemod uses: [./src/5.0.0/transforms/](./src/5.0.0/transforms/)
+  - boilerplate if you want to write your own transform: [./src/boilerplate-for-transform/](./src/boilerplate-for-transform/)
+- other, reusable transforms, that `cui5` also uses: [../../packages/reusable-transforms/](../../packages/reusable-transforms/)
+- running tests (for cui & reusable transforms):
+  - `yarn test`
+  - (assuming `cd community/@pipedrive__convention-ui-react/` (here))
+  - tests are usually co-located near the transforms.
+- my own notes i took while developing the codemods: http://kiprasmel.github.io/notes/codemods.html
+
+--- 
 
 fin.
