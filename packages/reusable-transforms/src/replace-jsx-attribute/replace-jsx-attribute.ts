@@ -143,9 +143,9 @@ export const replaceJsxAttribute: Transformer<ConfigToModifyJSXAttributeAndItsVa
                  */
                 key = keyToMatchAnyKeyIfUnmatched;
             } else {
-				const nameOfEnvVarThatDisablesUnexpectedPropertyValueWarning = "CODEMODS_DO_NOT_ADD_POTENTIALLY_NON_IDEMPOTENT_WARNINGS" as const;
+				const nameOfEnvVarThatAsksToAvoidPotentiallyIdempotentSideEffects = "CODEMODS_AVOID_PRODUCING_POTENTIALLY_NON_IDEMPOTENT_SIDE_EFFECTS" as const;
 
-				if (process.env[nameOfEnvVarThatDisablesUnexpectedPropertyValueWarning]) {
+				if (process.env[nameOfEnvVarThatAsksToAvoidPotentiallyIdempotentSideEffects]) {
 					return
 				}
 
@@ -161,7 +161,7 @@ export const replaceJsxAttribute: Transformer<ConfigToModifyJSXAttributeAndItsVa
 					you can disable these warnings
 					(especially if you're running the same codemods more than once)
 					by discarding the changes, setting the environment variable
-					\`${nameOfEnvVarThatDisablesUnexpectedPropertyValueWarning}\`
+					\`${nameOfEnvVarThatAsksToAvoidPotentiallyIdempotentSideEffects}\`
 					to any value and re-running the codemods.
 				`;
 

@@ -40,6 +40,7 @@ But, just in case:
 - [Usage](#usage)
 	- [1. Setup (needed once)](#1-setup-needed-once)
 	- [2. Run](#2-run)
+		- [2.1 (technical) potential issues with the `flow` parser](#21-technical-potential-issues-with-the-flow-parser)
 - [Terminology](#terminology)
 - [Supported migrations (grouped by transformer)](#supported-migrations-grouped-by-transformer)
 	- [1. transformer `replace-jsx-attribute`](#1-transformer-replace-jsx-attribute)
@@ -134,25 +135,43 @@ TL;DR:
 
 -   `flow` is the parser; you'll ~~always~~ use this one, at least for cui v5.
 
-NB: (technical) we [received a report](https://pipedrive.slack.com/archives/C02LK8Y583D/p1641893745002800) that when using the `flow` parser, with some files codemods can error:
+#### 2.1 (technical) potential issues with the `flow` parser
+
+we [received a report](https://pipedrive.slack.com/archives/C02LK8Y583D/p1641893745002800) that when using the `flow` parser, with some files codemods can error:
 
 ```
 Transformation error (did not recognize object of type "IndexedAccessType")
 ```
 
-if that's the case, you can try different parsers, namely, `tsx`:
+if this happens, you can try different parsers, namely, `tsx`:
 
 ```sh
-./run.js tsx cui5 ../path/to/project/src/
+# assuming you already ran with "flow" and got the error above
+
+dir="../path/to/project/src/"
+
+cd "$dir"
+git commit -m "part 1"
+cd -
+
+# ./run.js tsx cui5 "$dir"
+CODEMODS_AVOID_PRODUCING_POTENTIALLY_NON_IDEMPOTENT_SIDE_EFFECTS=1 ./run.js tsx cui5 "$dir"
 ```
 
 though beware that:
 - you're stepping into an un-tested teritory (our codemods are tested only [with the `flow` parser](../../packages/reusable-transforms/src/test-utils/inlineTest.ts#L48))
 - with the `tsx` transform specifically, it doesn't work when you're importing with `require` instead of `import`
 
-if you get the above error, for best results, you can try first running with the `flow` parser, committing the changes, and then running again with the `tsx` parser - to take care of the files where `flow` errored and couldn't run.
-  - note that until we make the codemods idempotent, they, after running _more than once_, can add a few comments with warnings that an unexpected value was found - you can ignore these warnings (these warnings are useful for the first run only).
+only if you get the error above, then for best results, you can try first running with the `flow` parser, committing the changes, and then running again with the `tsx` parser - to take care of the files where `flow` errored and couldn't run.
+
+note that until we make the codemods idempotent, they, after running _more than once_, can add a few comments with warnings that an unexpected value was found.
+  - you can ignore these warnings (these warnings are useful for the first run only).
   - or - disable the warnings by setting the environment variable `CODEMODS_DO_NOT_ADD_POTENTIALLY_NON_IDEMPOTENT_WARNINGS` to any value before using the run.js script.
+
+for the curious, this error happens when a file uses typescript's ["Indexed Access Type"](https://www.typescriptlang.org/docs/handbook/2/indexed-access-types.html).
+
+we'll eventually investigate. see https://pipedrive.atlassian.net/browse/FUN-2074
+
 
 <!--
 	TODO: documentation instead
