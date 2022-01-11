@@ -50,14 +50,13 @@ But, just in case:
 	- [3. transformer `add-missing-jsx-attribute`](#3-transformer-add-missing-jsx-attribute)
 		- [3.1](#31)
 	- [4. transformer `rename-style-tokens`](#4-transformer-rename-style-tokens)
-		- [Status](#status)
 		- [Limitations](#limitations-1)
 		- [4.1 Design tokens - AMD JS variables](#41-design-tokens---amd-js-variables)
 		- [4.2 Design tokens - JSON variables](#42-design-tokens---json-variables)
 		- [4.3 Design tokens - JSON variables (conventioned)](#43-design-tokens---json-variables-conventioned)
 		- [4.4 Design tokens - JS variables](#44-design-tokens---js-variables)
 	- [5. transformer `postcss-replace-simple-variables`](#5-transformer-postcss-replace-simple-variables)
-		- [Status](#status-1)
+		- [Status: WIP](#status-wip)
 		- [Limitations](#limitations-2)
 		- [5.1 Design tokens - PostCSS](#51-design-tokens---postcss)
 		- [5.2 Design tokens - SCSS](#52-design-tokens---scss)
@@ -379,10 +378,6 @@ function SomeComponent() {
 
 ### 4. transformer `rename-style-tokens`
 
-#### Status
-
-see https://github.com/pipedrive/CodeshiftCommunity/pull/21
-
 #### Limitations
 
 TL;DR: none of the previous ones from [replace-jsx-attribute](#1-transformer-replace-jsx-attribute), except for import-regrouping.
@@ -618,7 +613,7 @@ export const Foo = styled.div`
 
 ### 5. transformer `postcss-replace-simple-variables`
 
-#### Status
+#### Status: WIP
 
 see https://github.com/pipedrive/CodeshiftCommunity/pull/22
 
