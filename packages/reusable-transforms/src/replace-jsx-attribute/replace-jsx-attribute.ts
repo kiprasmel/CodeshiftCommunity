@@ -143,6 +143,12 @@ export const replaceJsxAttribute: Transformer<ConfigToModifyJSXAttributeAndItsVa
                  */
                 key = keyToMatchAnyKeyIfUnmatched;
             } else {
+				const nameOfEnvVarThatDisablesUnexpectedPropertyValueWarning = "CODEMODS_DO_NOT_ADD_POTENTIALLY_NON_IDEMPOTENT_WARNINGS" as const;
+
+				if (process.env[nameOfEnvVarThatDisablesUnexpectedPropertyValueWarning]) {
+					return
+				}
+
                 const comment = dedent`
 					WARNING unexpected property for \`${config.propOld}\` (now \`${config.propNew.toString()}\`):
 				
@@ -151,6 +157,12 @@ export const replaceJsxAttribute: Transformer<ConfigToModifyJSXAttributeAndItsVa
 					expected one of: ${array(Object.keys(config.fromToValueMap).map(k => k.toString()))}.
 
 					whom map to: ${array(Object.values(config.fromToValueMap).map(val => val?.toString() || ""))}.
+
+					you can disable these warnings
+					(especially if you're running the same codemods more than once)
+					by discarding the changes, setting the environment variable
+					\`${nameOfEnvVarThatDisablesUnexpectedPropertyValueWarning}\`
+					to any value and re-running the codemods.
 				`;
 
                 insertMultilineComment(j, j(path), comment);

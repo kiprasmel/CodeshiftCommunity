@@ -152,6 +152,7 @@ though beware that:
 
 if you get the above error, for best results, you can try first running with the `flow` parser, committing the changes, and then running again with the `tsx` parser - to take care of the files where `flow` errored and couldn't run.
   - note that until we make the codemods idempotent, they, after running _more than once_, can add a few comments with warnings that an unexpected value was found - you can ignore these warnings (these warnings are useful for the first run only).
+  - or - disable the warnings by setting the environment variable `CODEMODS_DO_NOT_ADD_POTENTIALLY_NON_IDEMPOTENT_WARNINGS` to any value before using the run.js script.
 
 <!--
 	TODO: documentation instead
