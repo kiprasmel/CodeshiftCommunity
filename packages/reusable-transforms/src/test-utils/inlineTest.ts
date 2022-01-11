@@ -40,6 +40,10 @@ export function inlineTest<C>(props: InlineTestProps<C>): InlineTestRet {
              * in the astexplorer, the `@typescript-eslint/parser` worked well,
              * I wonder if we can add it,
              * but atm only `flow` works for both js & ts.
+             *
+             * though it's not perfect:
+             * see the pipedrive's CUI [README](../../../community/@pipedrive__convention-ui-react/README.md)
+             *
              */
             parser: "flow",
         };

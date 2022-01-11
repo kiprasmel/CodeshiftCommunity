@@ -122,16 +122,6 @@ works.
 
 TL;DR:
 
--   `flow` is the parser; you'll always use this one, at least for cui v5.
-
-	<!--
-		TODO: documentation instead
-	 -->
-    <!--
-	-   If you want to learn more on how it works, you can watch the "How codemods work - from first principles, w/
-        sprinkles of jscodeshift" video (soon™️).
-	-->
-
 -   `cui5` is the path to a codemod, or a shorthand for it (like in this case), which comes from the [shorthands.json](./../../shorthands.json) file.
 <!-- 
 	https://github.com/pipedrive/CodeshiftCommunity/blob/fork/shorthands.json
@@ -142,6 +132,36 @@ TL;DR:
     -   in general, multiple paths/shorthands can be specified, separated by commas `,` - useful if you'd want to run
         only a few transforms instead of the whole codemod (soon™️).
 -->
+
+-   `flow` is the parser; you'll ~~always~~ use this one, at least for cui v5.
+
+NB: (technical) we [received a report](https://pipedrive.slack.com/archives/C02LK8Y583D/p1641893745002800) that when using the `flow` parser, with some files codemods can error:
+
+```
+Transformation error (did not recognize object of type "IndexedAccessType")
+```
+
+if that's the case, you can try different parsers, namely, `tsx`:
+
+```sh
+./run.js tsx cui5 ../path/to/project/src/
+```
+
+though beware that:
+- you're stepping into an un-tested teritory (our codemods are tested only [with the `flow` parser](../../packages/reusable-transforms/src/test-utils/inlineTest.ts#L48))
+- with the `tsx` transform specifically, it doesn't work when you're importing with `require` instead of `import`
+
+if you get the above error, for best results, you can try first running with the `flow` parser, committing the changes, and then running again with the `tsx` parser - to take care of the files where `flow` errored and couldn't run.
+  - note that until we make the codemods idempotent, they, after running _more than once_, can add a few comments with warnings that an unexpected value was found - you can ignore these warnings (these warnings are useful for the first run only).
+
+<!--
+	TODO: documentation instead
+	-->
+<!--
+-   If you want to learn more on how it works, you can watch the "How codemods work - from first principles, w/
+	sprinkles of jscodeshift" video (soon™️).
+-->
+
 
 ## Terminology
 
