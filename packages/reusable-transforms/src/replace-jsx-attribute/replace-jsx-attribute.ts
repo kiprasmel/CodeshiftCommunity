@@ -5,7 +5,7 @@ import {
     JSXIdentifier,
 } from "jscodeshift";
 import { namedTypes } from "ast-types/gen/namedTypes";
-import { array } from "nice-comment";
+import { array, bullets } from "nice-comment";
 import dedent from "ts-dedent";
 
 import { insertCommentBefore, inlineCommentPrefix, insertMultilineComment } from "@codeshift/utils";
@@ -143,26 +143,39 @@ export const replaceJsxAttribute: Transformer<ConfigToModifyJSXAttributeAndItsVa
                  */
                 key = keyToMatchAnyKeyIfUnmatched;
             } else {
-				const nameOfEnvVarThatAsksToAvoidPotentiallyIdempotentSideEffects = "CODEMODS_AVOID_PRODUCING_POTENTIALLY_NON_IDEMPOTENT_SIDE_EFFECTS" as const;
+                const nameOfEnvVarThatAsksToAvoidPotentiallyIdempotentSideEffects = "CODEMODS_AVOID_PRODUCING_POTENTIALLY_NON_IDEMPOTENT_SIDE_EFFECTS" as const;
 
-				if (process.env[nameOfEnvVarThatAsksToAvoidPotentiallyIdempotentSideEffects]) {
-					return
-				}
+                if (process.env[nameOfEnvVarThatAsksToAvoidPotentiallyIdempotentSideEffects]) {
+                    /**
+                     * we can almost confidently avoid the warnings
+                     * if
+                     *  we see that a value has already been converted,
+                     * i.e. the `key` exists not as a _key_ in the `fromToValueMap`,
+                     * but as a _value_.
+                     */
+                    if (
+                        Object.values(config.fromToValueMap).includes(key.toString()) ||
+                        key === keyToMatchAnyKeyIfUnmatched
+                    ) {
+                        /**
+                         * edit: nvm, in a lot of places there are non-literal values
+                         * and you get quite a few warnings
+                         */
+                        return;
+                    }
+                }
+
+                const got: string = key === keyToMatchAnyKeyIfUnmatched ? "<unmatched>" : key.toString();
+                const bulletpoints: string[] = Object.entries(config.fromToValueMap).map(([k, v]) =>
+                    array([k.toString(), v?.toString() || ""]),
+                );
 
                 const comment = dedent`
 					WARNING unexpected property for \`${config.propOld}\` (now \`${config.propNew.toString()}\`):
 				
-					got: \`"${key.toString()}"\`
+					got: \`${got}\`
 
-					expected one of: ${array(Object.keys(config.fromToValueMap).map(k => k.toString()))}.
-
-					whom map to: ${array(Object.values(config.fromToValueMap).map(val => val?.toString() || ""))}.
-
-					you can disable these warnings
-					(especially if you're running the same codemods more than once)
-					by discarding the changes, setting the environment variable
-					\`${nameOfEnvVarThatAsksToAvoidPotentiallyIdempotentSideEffects}\`
-					to any value and re-running the codemods.
+					${bullets("expected old -> new (figure it out yourself):", bulletpoints)}.
 				`;
 
                 insertMultilineComment(j, j(path), comment);
@@ -252,7 +265,7 @@ export const replaceJsxAttribute: Transformer<ConfigToModifyJSXAttributeAndItsVa
 
             Read the Migration Guide to learn how:
             ${config.migrationGuideUrl}
-		`
+		`;
 
         /**
          * TODO: insertCommentAfter
@@ -401,11 +414,11 @@ function findMatchingPropValue(j: JSCodeshift, path: ASTPath<JSXIdentifier>) {
                                         j,
                                         // j(path).closest(j.JSXOpeningElement),
                                         j(path), // TODO FIXME - what if the `path` gets removed?
-										dedent`
+                                        dedent`
                                             UNSUPPORTED (JSXExpressionContainer.ExpressionKind).
 
                                             If you have a valid use case (or aren't sure), create a feature request.
-										`
+										`,
                                     );
                                     return false;
                                 },

@@ -712,15 +712,14 @@ CODEMODS_AVOID_PRODUCING_POTENTIALLY_NON_IDEMPOTENT_SIDE_EFFECTS=1 ./run.js tsx 
 
 ```
 
-here we're using the `tsx` parser to take care of the files where `flow` errored and couldn't run.
+here we're using the `tsx` parser to hopefully take care of the files where `flow` errored and couldn't run.
 
 though beware that:
 - you're stepping into an un-tested teritory (our codemods are tested only [with the `flow` parser](../../packages/reusable-transforms/src/test-utils/inlineTest.ts#L48))
 - with the `tsx` transform specifically, it doesn't work when you're importing with `require` instead of `import`
 
-note that until we make the codemods idempotent, they, after running _more than once_, can add a few comments with warnings that an unexpected value was found.
-  - you can ignore these warnings (these warnings are useful for the first run only).
-  - or - disable the warnings by setting the environment variable `CODEMODS_DO_NOT_ADD_POTENTIALLY_NON_IDEMPOTENT_WARNINGS` to any value before using the run.js script.
+note that until we make the codemods idempotent, they, after running _more than once_, can e.g. add a few comments with warnings that an unexpected value was found.
+  - this is why we set the env variable `CODEMODS_AVOID_PRODUCING_POTENTIALLY_NON_IDEMPOTENT_SIDE_EFFECTS` to any value before using the run.js script above - to avoid them where possible.
 
 for the curious, this error happens when a file uses typescript's ["Indexed Access Type"](https://www.typescriptlang.org/docs/handbook/2/indexed-access-types.html).
 
