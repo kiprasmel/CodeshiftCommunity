@@ -60,7 +60,7 @@ But, just in case:
 		- [Limitations](#limitations-2)
 		- [5.1 Design tokens - PostCSS](#51-design-tokens---postcss)
 		- [5.2 Design tokens - SCSS](#52-design-tokens---scss)
-- [Troubleshotting](#troubleshotting)
+- [Troubleshooting](#troubleshooting)
 	- [1. potential issues with the `flow` parser](#1-potential-issues-with-the-flow-parser)
 - [Meta](#meta)
 
@@ -117,11 +117,6 @@ Verify you don't have uncommitted changes, since it'll be hard(er) to differenti
 ```sh
 ./run.js flow cui5 ../path/to/project/src/
 ```
-
-Optionally, explore the [run.js script](https://github.com/pipedrive/CodeshiftCommunity/blob/fork/run.js) to see how it
-works.
-
-TL;DR:
 
 -   `flow` is the parser; you'll ~~always~~ use this one, at least for cui v5.
     - see also [Troubleshooting](#troubleshooting), specifically [1. potential issues with the `flow` parser](#1-potential-issues-with-the-flow-parser).
@@ -745,6 +740,8 @@ we'll eventually investigate. see https://pipedrive.atlassian.net/browse/FUN-207
 - Codeshift Community:
   - http://codeshiftcommunity.com/
   - http://github.com/CodeshiftCommunity/CodeshiftCommunity/ (upstream)
+- the [run.js](../../run.js) script
+  - only a work-around until we merge some improvements to upstream<br>& have our own separate repo for codemods - by then you'll be able to<br>use the raw CLI [../../packages/cli/bin/codeshift-cli.js](../../packages/cli/bin/codeshift-cli.js) (through `npx`), which is what `run.js` uses under the hood.
 - where `cui5` comes from: [../../shorthands.json](../../shorthands.json)
 - main entrypoint for the `cui5` codemod: [./src/5.0.0/codemod.ts](./src/5.0.0/codemod.ts)
   - cui-specific configs for transforms: `./src/5.0.0/*.config.cui-specific.ts`
