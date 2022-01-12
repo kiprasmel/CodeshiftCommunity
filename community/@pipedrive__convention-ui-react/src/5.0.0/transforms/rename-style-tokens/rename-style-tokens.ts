@@ -1,22 +1,8 @@
-import fs from "fs";
-import path from "path";
-
 import { Transformer } from "@codeshift/reusable-transforms/src/utils/Transformer";
 
+import mappingsOrig from "../../mapping/tokenMapping.json";
+
 import { regroupImports } from "./regroupImports";
-
-const mappingsContent = fs.readFileSync(
-    path.join(
-        __dirname, //
-        "..",
-        "..",
-        "mapping",
-        "tokenMapping.json",
-    ),
-    { encoding: "utf-8" },
-);
-
-const mappingsOrig = JSON.parse(mappingsContent);
 
 /**
  * merge the mappings into a single object.
@@ -24,7 +10,7 @@ const mappingsOrig = JSON.parse(mappingsContent);
  */
 const mappings: Record<string, string> = Object.keys(mappingsOrig["js"]) //
     .reduce(
-        (acc, curr) => Object.assign(acc, mappingsOrig["js"][curr]), //
+        (acc, curr) => Object.assign(acc, mappingsOrig["js"][curr as keyof typeof mappingsOrig["js"]]), //
         {},
     );
 

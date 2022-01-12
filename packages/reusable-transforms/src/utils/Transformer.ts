@@ -45,8 +45,10 @@ export const composeTransforms = <
      *
      */
     (
-        ...transformerParamsExceptConfig: [j: JSCodeshift, src: Collection<any>, fileInfo: FileInfo, api: API, options: Options]
-    ): void[][] =>
+		//
+		...transformerParamsExceptConfig: [j: JSCodeshift, src: Collection<any>, fileInfo: FileInfo, api: API, options: Options] // TODO ESLINT
+	): 
+    void[][] =>
         tuplesOfTransformsWithTypesafeConfigs.map(([transformer, configs]) =>
             /**
              * `configs` are already verified previously;
@@ -59,17 +61,29 @@ export const composeTransforms = <
              * and hopefully we'll be able to get rid of it in the future.
              *
              */
-            (configs as typeof transformer extends Transformer<infer C> ? C[] : never).map(config =>
-                transformer(
-                    // api.j, //
-                    // source,
-                    // file,
-                    // api,
-                    // options,
-                    ...transformerParamsExceptConfig,
-                    config,
-                ),
-            ),
+            !configs?.length
+                ? [
+                      transformer(
+                          // api.j, //
+                          // source,
+                          // file,
+                          // api,
+                          // options,
+                          ...transformerParamsExceptConfig,
+                          {},
+                      ),
+                  ]
+                : (configs as typeof transformer extends Transformer<infer C> ? C[] : never).map(config =>
+                      transformer(
+                          // api.j, //
+                          // source,
+                          // file,
+                          // api,
+                          // options,
+                          ...transformerParamsExceptConfig,
+                          config,
+                      ),
+                  ),
         );
 
 export const createCodemodFromComposedTransforms = <
