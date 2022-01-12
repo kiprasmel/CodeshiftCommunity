@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+/* eslint-disable @typescript-eslint/no-var-requires */
+
 /**
  * a temporary utility to run local codemods quickly
  * before we improve stuff upstream.
@@ -115,7 +117,12 @@ function parseArrayFromCsv(csv = '') {
     .filter(c => !!c);
 }
 
-function resolveTransformsFromShorthand([pathToCodemodPkg, transformVersion]) {
+function resolveTransformsFromShorthand([
+  relPathToCodemodPkg,
+  transformVersion,
+]) {
+  const pathToCodemodPkg = path.join(__dirname, relPathToCodemodPkg);
+
   if (!!process.env.OLD_FULL_REBUILD) {
     execSyncP(`yarn --cwd ${pathToCodemodPkg} build`);
     console.log('built');
@@ -127,9 +134,9 @@ function resolveTransformsFromShorthand([pathToCodemodPkg, transformVersion]) {
     'src',
     'codeshift.config.js',
   );
-  console.log({ pathToCodemodConfig });
 
-  const codemodCfg = require(path.join(__dirname, pathToCodemodConfig));
+  const codemodCfg = require(pathToCodemodConfig);
+  console.log({ pathToCodemodConfig, codemodCfg, __dirname });
 
   const { transforms } = codemodCfg;
 
