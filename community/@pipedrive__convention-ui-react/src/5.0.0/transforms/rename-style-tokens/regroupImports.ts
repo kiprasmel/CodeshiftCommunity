@@ -1,3 +1,5 @@
+import { ASTPath } from "jscodeshift";
+import { namedTypes } from "ast-types";
 import dedent from "ts-dedent";
 
 import { insertMultilineComment } from "@codeshift/utils";
@@ -145,10 +147,12 @@ export const regroupImports: Transformer<{}, any> = (
 
     const defaultImportsNotSupportedWarning = "WARNING default imports not supported (yet?).";
 
+    const importPathsToRemove: ASTPath<namedTypes.VariableDeclarator | namedTypes.ImportDeclaration>[] = [];
+
     const newDestructuredNames: KV[] = importsThatNeedRegrouping
         .map(({ im, matchingJustRenames, matchingWithDestructuring }): KV | KV[] => {
             if (im.path !== ASTPathForNewImport) {
-                j(im.path).remove();
+                importPathsToRemove.push(im.path);
             }
 
             if (matchingWithDestructuring) {
@@ -195,6 +199,7 @@ export const regroupImports: Transformer<{}, any> = (
                         value: im.isImportedAs,
                     };
                 } else {
+                    console.error(im.path.node);
                     return assertNever(im.path.node);
                 }
             } else {
@@ -202,6 +207,8 @@ export const regroupImports: Transformer<{}, any> = (
             }
         })
         .flat();
+
+    importPathsToRemove.forEach(path => j(path).remove());
 
     if (newImportAlreadyExisting) {
         /**
