@@ -197,16 +197,12 @@ function SomeComponent() {
 
 #### Limitations
 
--   works only on components that are directly imported from "@pipedrive/convention-ui-react" & directly used.<hr />In
-    order to avoid false positives & clashes between similar components, the transform must detect that the component is
-    imported from CUI. Currently transforms work on a file-by-file basis _by design_ (parsers, transformer libraries
-    work this way).<br />We're [working](https://github.com/pipedrive/CodeshiftCommunity/pull/6) on additional
-    pre-processing utilities to allow enhancing codemods w/ full program awareness, but since it's a lengthy task, it's
-    lower in the priority list.
+-   works only on components that are directly imported from "@pipedrive/convention-ui-react" & directly used.
+    - In order to avoid false positives & clashes between similar components, the transform must detect that the component is imported from CUI. Currently transforms work on a file-by-file basis _by design_ (parsers, transformer libraries work this way). We're [working](https://github.com/pipedrive/CodeshiftCommunity/pull/6) on additional pre-processing utilities to allow enhancing codemods w/ full program awareness, but since it's a lengthy task, it's lower in the priority list.
 
--   namespace imports (`import * as C from "cui"`) are not yet supported, thus the previous limitation applies.<hr />
+-   namespace imports (`import * as C from "cui"`) are not yet supported, thus the previous limitation applies.
 
-Will not work (yet) - 1st limitation:
+Will not work (yet) (soon™️) - 1st limitation:
 
 ```jsx
 import styled from 'styled-components';
