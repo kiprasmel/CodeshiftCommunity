@@ -40,7 +40,7 @@ export const renameStyleTokens: Transformer<any, any> = (
         //
         .find(j.TemplateLiteral)
         .find(j.MemberExpression, {
-            property: obj =>
+            property: (obj: any) =>
                 j.Literal.check(obj)
                     ? obj.value !== null && obj.value.toString() in mappings //
                     : j.Identifier.check(obj)
