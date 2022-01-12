@@ -40,7 +40,6 @@ But, just in case:
 - [Usage](#usage)
 	- [1. Setup (needed once)](#1-setup-needed-once)
 	- [2. Run](#2-run)
-		- [2.1 (technical) potential issues with the `flow` parser](#21-technical-potential-issues-with-the-flow-parser)
 - [Terminology](#terminology)
 - [Supported migrations (grouped by transformer)](#supported-migrations-grouped-by-transformer)
 	- [1. transformer `replace-jsx-attribute`](#1-transformer-replace-jsx-attribute)
@@ -61,6 +60,8 @@ But, just in case:
 		- [Limitations](#limitations-2)
 		- [5.1 Design tokens - PostCSS](#51-design-tokens---postcss)
 		- [5.2 Design tokens - SCSS](#52-design-tokens---scss)
+- [Troubleshotting](#troubleshotting)
+	- [1. potential issues with the `flow` parser](#1-potential-issues-with-the-flow-parser)
 - [Meta](#meta)
 
 
@@ -122,6 +123,8 @@ works.
 
 TL;DR:
 
+-   `flow` is the parser; you'll ~~always~~ use this one, at least for cui v5.
+    - see also [Troubleshooting](#troubleshooting), specifically [1. potential issues with the `flow` parser](#1-potential-issues-with-the-flow-parser).
 -   `cui5` is the path to a codemod, or a shorthand for it (like in this case), which comes from the [shorthands.json](./../../shorthands.json) file.
 <!-- 
 	https://github.com/pipedrive/CodeshiftCommunity/blob/fork/shorthands.json
@@ -132,46 +135,6 @@ TL;DR:
     -   in general, multiple paths/shorthands can be specified, separated by commas `,` - useful if you'd want to run
         only a few transforms instead of the whole codemod (soon™️).
 -->
-
--   `flow` is the parser; you'll ~~always~~ use this one, at least for cui v5.
-
-#### 2.1 (technical) potential issues with the `flow` parser
-
-we [received a report](https://pipedrive.slack.com/archives/C02LK8Y583D/p1641893745002800) that when using the `flow` parser, with some files codemods can error:
-
-```
-Transformation error (did not recognize object of type "IndexedAccessType")
-```
-
-if this happens, you can try different parsers, namely, `tsx`:
-
-```sh
-# assuming you already ran with "flow" and got the error above
-
-dir="../path/to/project/src/"
-
-cd "$dir"
-git commit -m "part 1"
-cd -
-
-# ./run.js tsx cui5 "$dir"
-CODEMODS_AVOID_PRODUCING_POTENTIALLY_NON_IDEMPOTENT_SIDE_EFFECTS=1 ./run.js tsx cui5 "$dir"
-```
-
-though beware that:
-- you're stepping into an un-tested teritory (our codemods are tested only [with the `flow` parser](../../packages/reusable-transforms/src/test-utils/inlineTest.ts#L48))
-- with the `tsx` transform specifically, it doesn't work when you're importing with `require` instead of `import`
-
-only if you get the error above, then for best results, you can try first running with the `flow` parser, committing the changes, and then running again with the `tsx` parser - to take care of the files where `flow` errored and couldn't run.
-
-note that until we make the codemods idempotent, they, after running _more than once_, can add a few comments with warnings that an unexpected value was found.
-  - you can ignore these warnings (these warnings are useful for the first run only).
-  - or - disable the warnings by setting the environment variable `CODEMODS_DO_NOT_ADD_POTENTIALLY_NON_IDEMPOTENT_WARNINGS` to any value before using the run.js script.
-
-for the curious, this error happens when a file uses typescript's ["Indexed Access Type"](https://www.typescriptlang.org/docs/handbook/2/indexed-access-types.html).
-
-we'll eventually investigate. see https://pipedrive.atlassian.net/browse/FUN-2074
-
 
 <!--
 	TODO: documentation instead
@@ -731,10 +694,54 @@ To:
 
 ---
 
+## Troubleshooting
+
+### 1. potential issues with the `flow` parser
+
+we [received a report](https://pipedrive.slack.com/archives/C02LK8Y583D/p1641893745002800) that when using the `flow` parser, with some files codemods can error:
+
+```
+Transformation error (did not recognize object of type "IndexedAccessType")
+```
+
+if this happens, you can try different parsers, namely, `tsx`:
+
+```sh
+# assuming you already ran with "flow" and got the error above
+
+dir="../path/to/project/src/"
+
+cd "$dir"
+git commit -m "part 1"
+cd -
+
+# ./run.js tsx cui5 "$dir"
+CODEMODS_AVOID_PRODUCING_POTENTIALLY_NON_IDEMPOTENT_SIDE_EFFECTS=1 ./run.js tsx cui5 "$dir"
+
+
+```
+
+here we're using the `tsx` parser to take care of the files where `flow` errored and couldn't run.
+
+though beware that:
+- you're stepping into an un-tested teritory (our codemods are tested only [with the `flow` parser](../../packages/reusable-transforms/src/test-utils/inlineTest.ts#L48))
+- with the `tsx` transform specifically, it doesn't work when you're importing with `require` instead of `import`
+
+note that until we make the codemods idempotent, they, after running _more than once_, can add a few comments with warnings that an unexpected value was found.
+  - you can ignore these warnings (these warnings are useful for the first run only).
+  - or - disable the warnings by setting the environment variable `CODEMODS_DO_NOT_ADD_POTENTIALLY_NON_IDEMPOTENT_WARNINGS` to any value before using the run.js script.
+
+for the curious, this error happens when a file uses typescript's ["Indexed Access Type"](https://www.typescriptlang.org/docs/handbook/2/indexed-access-types.html).
+
+we'll eventually investigate. see https://pipedrive.atlassian.net/browse/FUN-2074
+
+---
+
 ## Meta
  
-- AST explorer: https://astexplorer.net/
-  - parser: `flow`, transformer: `jscodeshift`
+- AST explorer:
+  - https://astexplorer.net (parser: `flow`, transformer: `jscodeshift`)
+  - https://github.com/fkling/astexplorer (same author as jscodeshift btw!)
 - Codeshift Community:
   - http://codeshiftcommunity.com/
   - http://github.com/CodeshiftCommunity/CodeshiftCommunity/ (upstream)
