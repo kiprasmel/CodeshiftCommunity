@@ -1,6 +1,6 @@
-import { cuiLibraryName } from "./config";
-
 import { ConfigToAddMissingJsxProp } from "@codeshift/reusable-transforms/src/add-missing-jsx-attribute";
+
+import { cuiLibraryName } from "./config";
 
 export const configsToAddMissingJsxAttribute: ConfigToAddMissingJsxProp[] = [
     {
@@ -20,6 +20,12 @@ export const configsToAddMissingJsxAttribute: ConfigToAddMissingJsxProp[] = [
         exportedAs: "Panel",
         newAttributeName: "radius",
         newAttributeValue: "s",
+    },
+    {
+        importedFrom: cuiLibraryName,
+        exportedAs: "VideoOverlay",
+        newAttributeName: "closeText",
+        instructionsOnHowToManuallyAddAttributeBecauseCannotAutomate: "Add translated tooltip text",
     },
 
     /**
