@@ -40,6 +40,8 @@ But, just in case:
 - [Usage](#usage)
 	- [1. Setup (needed once)](#1-setup-needed-once)
 	- [2. Run](#2-run)
+		- [2.1 Tips for next steps](#21-tips-for-next-steps)
+	- [3. Updating](#3-updating)
 - [Terminology](#terminology)
 - [Supported migrations (grouped by transformer)](#supported-migrations-grouped-by-transformer)
 	- [1. transformer `replace-jsx-attribute`](#1-transformer-replace-jsx-attribute)
@@ -139,6 +141,22 @@ Verify you don't have uncommitted changes, since it'll be hard(er) to differenti
 	sprinkles of jscodeshift" video (soon™️).
 -->
 
+#### 2.1 Tips for next steps
+
+- You will likely want to run your linter to undo some unrelated whitespace changes.
+  - though, you can also view the diff, whilst ignoring whitespace changes, with `git diff -u -b`, or [even](https://github.com/so-fancy/diff-so-fancy) `git diff -u -b | diff-so-fancy | less`
+- There will be some comments added - warnings, info, manual update requests - you'll need to take care of them.
+  - And beware that some scenarios the codemods don't detect at all (see below "Limitations" for specifics).
+- In between each step you make (e.g. updating to cui5, running codemods, running linter, taking care of comments), it's good to commit, to make it easier to review & see what caused what changes.
+
+### 3. Updating
+
+If some time has passed since you've cloned / last updated the repo, it's likely we've made some improvements.
+
+```sh
+git pull
+yarn
+```
 
 ## Terminology
 
@@ -749,4 +767,9 @@ we'll eventually investigate. see https://pipedrive.atlassian.net/browse/FUN-207
   - `yarn test`
   - (assuming `cd community/@pipedrive__convention-ui-react/` (here))
   - tests are usually co-located near the transforms.
+- demo files you can play with: [./src/5.0.0/demo/](./src/5.0.0/demo/)
+	<!-- 
+	TODO (needs cutting):
+	- demo video: 
+	-->
 - my own notes i took while developing the codemods: http://kiprasmel.github.io/notes/codemods.html
