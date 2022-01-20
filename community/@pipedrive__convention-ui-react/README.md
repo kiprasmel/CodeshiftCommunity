@@ -154,7 +154,7 @@ Verify you don't have uncommitted changes, since it'll be hard(er) to differenti
 If some time has passed since you've cloned / last updated the repo, it's likely we've made some improvements.
 
 ```sh
-git pull
+git pull --rebase
 yarn install
 ```
 
