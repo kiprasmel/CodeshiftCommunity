@@ -105,7 +105,7 @@ git clone https://github.com/pipedrive/CodeshiftCommunity.git
 
 cd CodeshiftCommunity/
 
-yarn
+yarn install
 ```
 
 ### 2. Run
@@ -155,7 +155,7 @@ If some time has passed since you've cloned / last updated the repo, it's likely
 
 ```sh
 git pull
-yarn
+yarn install
 ```
 
 ## Terminology
