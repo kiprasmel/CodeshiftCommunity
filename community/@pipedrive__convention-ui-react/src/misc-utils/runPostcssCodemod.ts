@@ -2,6 +2,7 @@ import fs from "fs";
 
 import nodeDir from "node-dir";
 import postcss, { LazyResult } from "postcss";
+import postcssScss from "postcss-scss";
 
 import mappings from "../../mapping/tokenMapping.json";
 
@@ -25,7 +26,7 @@ export function dryRunPostcssCodemod(src: string, filepath: string): LazyResult 
     return postcss([
         //
         postcssReplaceSimpleVariables({ mappings: mappingsMerged as any }),
-    ]).process(src, { from: filepath });
+    ]).process(src, { from: filepath, syntax: postcssScss });
 }
 
 export function runPostcssCodemod(dir: string) {

@@ -13,7 +13,8 @@
         "jscodeshift": "^0.13.1",
         "nice-comment": "0.12.1",
         "node-dir": "0.1.17",
-        "postcss": "8.4.5"
+        "postcss": "8.4.5",
+        "postcss-scss": "4.0.3"
     },
     "devDependencies": {
         "@codeshift/test-utils": "*",
