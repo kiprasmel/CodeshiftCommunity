@@ -1,3 +1,5 @@
 {
-  "cui5": ["./community/@pipedrive__convention-ui-react", "5.0.0"]
+  "cui5": ["alias", ["cui5-js", "cui5-css"]],
+  "cui5-js": ["./community/@pipedrive__convention-ui-react", "5.0.0"],
+  "cui5-css": ["./community/@pipedrive__convention-ui-react", "5.0.0-css"]
 }
