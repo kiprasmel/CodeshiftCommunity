@@ -1,16 +1,17 @@
-import { Declaration, PluginCreator } from "postcss";
+import { AcceptedPlugin, Declaration, PluginCreator } from "postcss";
 
-interface TokenMapping {
-    to: string[];
-}
+import { CodeshiftConfig } from "@codeshift/types";
+
+import { mappingsMerged } from "./mappings";
+import { runPostcssCodemod } from "../../../misc-utils/runPostcssCodemod";
 
 interface PluginOptions {
-    mappings: Record<string, TokenMapping>;
+    mappings: Record<string, string>;
     valueTransform?: (value: string) => string;
 }
 
 const postcssReplaceSimpleVariables: PluginCreator<PluginOptions> = (
-    { mappings }: PluginOptions = { mappings: {} },
+    { mappings }: PluginOptions = { mappings: mappingsMerged },
 ) => {
     return {
         postcssPlugin: "postcss-replace-simple-variables",
@@ -31,3 +32,8 @@ const postcssReplaceSimpleVariables: PluginCreator<PluginOptions> = (
 postcssReplaceSimpleVariables.postcss = true;
 
 export { postcssReplaceSimpleVariables };
+export default postcssReplaceSimpleVariables();
+
+export const codeshiftConfig: CodeshiftConfig<AcceptedPlugin> = {
+    runner: runPostcssCodemod,
+};
