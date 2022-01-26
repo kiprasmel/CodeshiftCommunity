@@ -58,8 +58,6 @@ But, just in case:
 		- [4.3 Design tokens - JSON variables (conventioned)](#43-design-tokens---json-variables-conventioned)
 		- [4.4 Design tokens - JS variables](#44-design-tokens---js-variables)
 	- [5. transformer `postcss-replace-simple-variables`](#5-transformer-postcss-replace-simple-variables)
-		- [Status: WIP](#status-wip)
-		- [Limitations](#limitations-2)
 		- [5.1 Design tokens - PostCSS](#51-design-tokens---postcss)
 		- [5.2 Design tokens - SCSS](#52-design-tokens---scss)
 - [Troubleshooting](#troubleshooting)
@@ -164,10 +162,13 @@ yarn install
     specific purpose.
 -   _Codemod (noun)_ - a combination of transforms.
 	- technical notes:
-      -   there's only 1 codemod for cui so far - `cui5`, and it just combines various transforms with cui5-specific configurations.
-      -   when we say "codemods" (plural) to outsiders, what we're referring to is transforms. (a PM or a designer don't need to know the difference, but for exploring the codebase, it's useful to know).
-          -   and exploring the codebase as a codemods consumer is something you very well could do - especially if you want to modify [some](./src/5.0.0/add-missing-jsx-attribute.config.cui-specific.ts) configuration, or disable [some](src/5.0.0/codemod.ts) transform. ideally, you'd reach out to the maintainers ofc, but not being afraid to tinker with the tools you use is always a welcome trait.
-      -   transforms are combined (composed) and ran together, one after another, on each file. see [./src/5.0.0/codemod.ts](./src/5.0.0/codemod.ts).
+      -   so far, cui has 2 separate codemods - `cui5-js` & `cui5-css`.
+          -   both of them combine various transforms with cui5-specific configurations.
+          -   they [codemods] are separate because they need different parsers & tools to run them (jscodeshift vs postcss)
+          -   and you can run them selectively, but, conveniently, there's also a [`cui5` alias](../../shorthands.json) that runs both.
+      -   transforms are combined (composed) into what we call the codemod, which runs the transforms, one after another, on each source file. see e.g. [./src/5.0.0/codemod.ts](./src/5.0.0/codemod.ts).
+	  - these notes probably say say much on their own, until you get a chance to explore the codebase.
+		-   and exploring the codebase as a codemods consumer is something you very well could do - especially if you want to modify [some](./src/5.0.0/add-missing-jsx-attribute.config.cui-specific.ts) configuration, or disable [some](src/5.0.0/codemod.ts) transform. ideally, you'd reach out to the maintainers ofc, but not being afraid to tinker with the tools you use is good proof that you're a [real hacker](http://catb.org/jargon/html/index.html).
 
 ## Supported migrations (grouped by transformer)
 
@@ -605,13 +606,11 @@ export const Foo = styled.div`
 
 ### 5. transformer `postcss-replace-simple-variables`
 
-#### Status: WIP
+-   Implementation: [./src/5.0.0/transforms/postcss-replace-simple-variables/postcss-replace-simple-variables.ts](./src/5.0.0/transforms/postcss-replace-simple-variables/postcss-replace-simple-variables.ts)
 
-see https://github.com/pipedrive/CodeshiftCommunity/pull/22
+-   CUI-specific ~~configs~~ mappings: [./src/5.0.0/mapping/tokenMapping.json](./src/5.0.0/mapping/tokenMapping.json)
 
-#### Limitations
-
-same as [rename-style-tokens (!)](#4-transformer-rename-style-tokens) transform.
+- Limitations: same as [rename-style-tokens (!)](#4-transformer-rename-style-tokens) transform.
 
 #### 5.1 Design tokens - PostCSS
 
@@ -756,8 +755,9 @@ we'll eventually investigate. see https://pipedrive.atlassian.net/browse/FUN-207
 - the [run.js](../../run.js) script
   - only a work-around until we merge some improvements to upstream<br>& have our own separate repo for codemods - by then you'll be able to<br>use the raw CLI [../../packages/cli/bin/codeshift-cli.js](../../packages/cli/bin/codeshift-cli.js) (through `npx`), which is what `run.js` uses under the hood.
 - where `cui5` comes from: [../../shorthands.json](../../shorthands.json)
-- main entrypoint for the `cui5` codemod: [./src/5.0.0/codemod.ts](./src/5.0.0/codemod.ts)
+- main entrypoint for the `cui5-js` codemod: [./src/5.0.0/codemod.ts](./src/5.0.0/codemod.ts)
   - cui-specific configs for transforms: `./src/5.0.0/*.config.cui-specific.ts`
+- likewise, main entrypoint for the `cui5-css` codemod: [./src/5.0.0/codemod.postcss.ts](./src/5.0.0/codemod.postcss.ts)
   - the `cui5map` - mapping of old->new values for css variables (tokens): [./src/5.0.0/mapping/tokenMapping.json](./src/5.0.0/mapping/tokenMapping.json)
     - note - do not update manually - it's automatically exported from figma.
 - some transforms that the `cui5` codemod uses: [./src/5.0.0/transforms/](./src/5.0.0/transforms/)
