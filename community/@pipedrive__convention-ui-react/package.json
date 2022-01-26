@@ -10,6 +10,7 @@
     },
     "dependencies": {
         "@codeshift/reusable-transforms": "*",
+        "based-groupby": "0.2.1",
         "jscodeshift": "^0.13.1",
         "nice-comment": "0.12.1",
         "node-dir": "0.1.17",
