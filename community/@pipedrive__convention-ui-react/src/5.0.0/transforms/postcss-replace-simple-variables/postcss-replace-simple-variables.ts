@@ -1,9 +1,6 @@
-import { AcceptedPlugin, Declaration, PluginCreator } from "postcss";
-
-import { CodeshiftConfig } from "@codeshift/types";
+import { Declaration, PluginCreator } from "postcss";
 
 import { mappingsMerged } from "./mappings";
-import { runPostcssCodemod } from "../../../misc-utils/runPostcssCodemod";
 
 interface PluginOptions {
     mappings: Record<string, string>;
@@ -33,7 +30,3 @@ postcssReplaceSimpleVariables.postcss = true;
 
 export { postcssReplaceSimpleVariables };
 export default postcssReplaceSimpleVariables();
-
-export const codeshiftConfig: CodeshiftConfig<AcceptedPlugin> = {
-    runner: runPostcssCodemod,
-};

@@ -1,7 +1,7 @@
 import fs from "fs";
 
 import nodeDir from "node-dir";
-import postcss, { AcceptedPlugin, LazyResult } from "postcss";
+import postcss, { AcceptedPlugin, Plugin, Processor, LazyResult } from "postcss";
 import postcssScss from "postcss-scss";
 import { GroupBy, groupBy } from "based-groupby";
 import chalk from "chalk";
@@ -37,7 +37,7 @@ export type PostcssCodemodResult = {
 export type PostcssCodemodOutcome = PostcssCodemodResult["outcome"];
 
 export const runPostcssCodemod: CustomRunner<
-    AcceptedPlugin, //
+    (Plugin | Processor)[], //
     Promise<GroupBy<PostcssCodemodResult, "outcome">>
 > = async ({
     pathsToModify, //
@@ -66,9 +66,11 @@ export const runPostcssCodemod: CustomRunner<
                         next();
                     }
 
-                    const result: LazyResult = dryRunPostcssCodemod(content, filepath, [
+                    const result: LazyResult = dryRunPostcssCodemod(
+                        content, //
+                        filepath,
                         transformInsideFileThatSpecifiesCodeshiftConfig,
-                    ]);
+                    );
                     const output: string = result.css;
 
                     /**
