@@ -167,7 +167,7 @@ yarn install
           -   they [codemods] are separate because they need different parsers & tools to run them (jscodeshift vs postcss)
           -   and you can run them selectively, but, conveniently, there's also a [`cui5` alias](../../shorthands.json) that runs both.
       -   transforms are combined (composed) into what we call the codemod, which runs the transforms, one after another, on each source file. see e.g. [./src/5.0.0/codemod.ts](./src/5.0.0/codemod.ts).
-	  - these notes probably say say much on their own, until you get a chance to explore the codebase.
+	  - these notes probably don't say much on their own, until you get a chance to explore the codebase.
 		-   and exploring the codebase as a codemods consumer is something you very well could do - especially if you want to modify [some](./src/5.0.0/add-missing-jsx-attribute.config.cui-specific.ts) configuration, or disable [some](src/5.0.0/codemod.ts) transform. ideally, you'd reach out to the maintainers ofc, but not being afraid to tinker with the tools you use is good proof that you're a [real hacker](http://catb.org/jargon/html/index.html).
 
 ## Supported migrations (grouped by transformer)
