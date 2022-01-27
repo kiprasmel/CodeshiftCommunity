@@ -1,5 +1,7 @@
 // import { API, FileInfo, Options } from "jscodeshift";
 
+import { CodeshiftConfig } from "@codeshift/types";
+
 import {
     createCodemodFromComposedTransforms, //
     transformerWithTypesafeConfigs,
@@ -33,3 +35,17 @@ const transformsWithTypesafeConfigs = [
 export const CUI4toCUI5 = createCodemodFromComposedTransforms(transformsWithTypesafeConfigs);
 
 export default CUI4toCUI5;
+
+// const preprocess = (paths: string[]) => {
+//     console.log("\npre-processing from paths:", paths, "\n");
+// };
+
+export const codeshiftConfig: CodeshiftConfig = {
+    runner: ({ defaultRunner }) => {
+        // preprocess(pathsToModify);
+
+        defaultRunner({
+            print: !!process.env.CODEMODS_PRINT,
+        });
+    },
+};

@@ -63,6 +63,9 @@ const pipeStdioOpts = (cwd = process.cwd()) => ({ cwd, stdio: 'inherit' });
 const execSyncP = (cmd, opts) =>
   cp.execSync(cmd, { ...opts, ...pipeStdioOpts() });
 
+const shorthands = require(path.join(__dirname, './shorthands.json'));
+console.log({ shorthands });
+
 run();
 
 function run() {
@@ -81,13 +84,10 @@ function run() {
     extensions,
   } = parseArgv();
 
-  const shorthands = require(path.join(__dirname, './shorthands.json'));
-  console.log({ shorthands });
-
   transformsToRun = transformsToRun
     .map(t => {
       if (t in shorthands) {
-        return resolveTransformsFromShorthand(shorthands[t]);
+        return resolveTransformsFromShorthand(shorthands, t);
       } else {
         if (!!process.env.OLD_FULL_REBUILD) {
           const dir = path.dirname(t);
@@ -98,12 +98,14 @@ function run() {
         return t;
       }
     })
-    .flat()
-    .join(',');
+    .flat();
+  const transformsToRunStr = transformsToRun.join(',');
+
+  console.log({ transformsToRun });
 
   const cliPath = path.join(__dirname, './packages/cli/bin/codeshift-cli.js');
 
-  const cmdToExec = `${cliPath} --parser ${parser} -e ${extensions} -t ${transformsToRun} ${fileOrDirectoryToModify}`;
+  const cmdToExec = `${cliPath} --parser ${parser} -e ${extensions} -t ${transformsToRunStr} ${fileOrDirectoryToModify}`;
   console.log({ cmdToExec });
 
   execSyncP(cmdToExec);
@@ -117,10 +119,44 @@ function parseArrayFromCsv(csv = '') {
     .filter(c => !!c);
 }
 
-function resolveTransformsFromShorthand([
-  relPathToCodemodPkg,
-  transformVersion,
-]) {
+function resolveTransformsFromShorthand(
+  shorthands,
+  currentShorthandKey,
+  alreadyVisitedShorthands = [currentShorthandKey],
+) {
+  if (!(currentShorthandKey in shorthands)) {
+    throw new Error('non-existing shorthand: ' + currentShorthandKey + '\n');
+  }
+
+  const [relPathToCodemodPkg, transformVersion] = shorthands[
+    currentShorthandKey
+  ];
+
+  if (relPathToCodemodPkg === 'alias') {
+    const unaliasedShorthands = transformVersion;
+
+    return unaliasedShorthands
+      .map(shorthand => {
+        if (alreadyVisitedShorthands.includes(shorthand)) {
+          console.error('\ncycle in shorthands.json file:', {
+            shorthand,
+            alreadyVisitedShorthands,
+          });
+
+          throw new Error(
+            'cycle in shorthands.json file. see above error output.\n',
+          );
+        }
+
+        return resolveTransformsFromShorthand(
+          shorthands,
+          shorthand,
+          alreadyVisitedShorthands.concat(shorthand),
+        );
+      })
+      .flat();
+  }
+
   const pathToCodemodPkg = path.join(__dirname, relPathToCodemodPkg);
 
   if (!!process.env.OLD_FULL_REBUILD) {
