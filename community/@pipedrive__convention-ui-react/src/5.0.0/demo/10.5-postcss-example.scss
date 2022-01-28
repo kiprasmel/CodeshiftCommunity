@@ -1,0 +1,465 @@
+.button {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+    border: 0;
+    background: transparent;
+    font: $font-button;
+    text-decoration: none;
+    text-align: center !important;
+    @include box-sizing(border-box);
+    @include border-radius(3px);
+
+    &:active {
+        box-shadow: none;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        outline: none;
+    }
+
+    &::-moz-focus-inner {
+        border: 0;
+        padding: 0;
+        margin: 0;
+    }
+
+    em,
+    span:not(.extraIcon) {
+        display: block;
+        padding: 5px 16px;
+        cursor: pointer;
+        font: $font-button;
+
+        &.soft {
+            font-weight: normal;
+        }
+    }
+
+    &.inline {
+        em,
+        span {
+            display: inline;
+        }
+    }
+
+    span {
+        color: rgba($color-black-hex, 0.64);
+        background: $color-white-hex;
+        border: 1px solid $color-black-hex-32;
+        @include border-radius(3px);
+
+        &:not(.link):not(.extraIcon) {
+            @include box-shadow(0 1px 2px rgba($color-black-hex, 0.05));
+        }
+
+        &:active:not(.link),
+        &.toggled:not(.link) {
+            @include box-shadow(inset 0 1px 2px rgba($color-black-hex, 0.1));
+        }
+
+        &.icon {
+            padding: 7px 9px;
+        }
+
+        &.icon {
+            &::before {
+                float: left;
+                margin-top: 0;
+                padding-right: 8px;
+                color: inherit;
+                font-size: $font-size-s;
+                line-height: 12px;
+            }
+
+            // Sorry for making ugly things that look pretty
+            &.icon-ellipsis::before {
+                font-size: 18px;
+                line-height: 16px;
+                vertical-align: baseline;
+                display: block;
+            }
+
+            &.icon-ellipsis:active {
+                @include box-shadow(inset 0 1px 2px rgba($color-black-hex, 0.1));
+                background-color: $color-black-hex-12;
+            }
+        }
+
+        &.iconRight:before {
+            float: right;
+            padding-left: 8px;
+            padding-right: 0;
+        }
+
+        &.icon:empty:before {
+            float: none;
+            margin-top: 0;
+            padding-right: 0;
+            padding-left: 0;
+        }
+
+        .extraIcon {
+            padding: 0;
+            margin-left: 8px;
+            margin-top: -3px;
+            border: none;
+            display: inline-block;
+            vertical-align: middle;
+            line-height: 10px;
+            padding-bottom: 4px;
+            margin-bottom: -4px;
+        }
+    }
+
+    &:hover span {
+        background: $color-black-hex-4;
+    }
+
+    &:active span {
+        background: $color-black-hex-12;
+    }
+
+    span.only-icon {
+        padding: 4px;
+
+        em {
+            padding: 0;
+        }
+    }
+
+    /* Primary */
+    .primary,
+    .chzn-container .chzn-results & .primary {
+        background: $color-green-hex;
+        color: $color-white-hex;
+        border-color: $color-green-hex;
+
+        span {
+            background-color: transparent;
+        }
+
+        .icon {
+            color: $color-white-hex;
+        }
+    }
+
+    &:hover .primary,
+    .chzn-container .chzn-results &:hover .primary {
+        background: mix($color-white-hex, $color-green-hex, 8%);
+        border-color: mix($color-white-hex, $color-green-hex, 8%);
+    }
+
+    &:active .primary,
+    &.toggled .primary,
+    .chzn-container .chzn-results &:active .primary {
+        background: mix($color-black-hex, $color-green-hex, 16%);
+        border-color: mix($color-black-hex, $color-green-hex, 16%);
+    }
+
+    /* Danger */
+    .danger,
+    .chzn-container .chzn-results & .danger {
+        background: $color-red-hex;
+        color: $color-white-hex;
+        border-color: $color-red-hex;
+
+        span {
+            background-color: transparent;
+        }
+
+        .icon {
+            color: $color-white-hex;
+        }
+    }
+    &:hover .danger,
+    .chzn-container .chzn-results &:hover .danger {
+        background: mix($color-white-hex, $color-red-hex, 8%);
+        border-color: mix($color-white-hex, $color-red-hex, 8%);
+    }
+    &:active .danger,
+    &.toggled .danger,
+    .chzn-container .chzn-results &:active .danger {
+        background: mix($color-black-hex, $color-red-hex, 16%);
+        border-color: mix($color-black-hex, $color-red-hex, 16%);
+    }
+
+    /* Link */
+    .link,
+    .chzn-container .chzn-results & .link {
+        background: transparent !important;
+        color: $color-blue-hex;
+        font-weight: $font-weight-semi;
+        border-color: transparent;
+
+        span {
+            background-color: transparent !important;
+        }
+    }
+
+    &:hover .link,
+    .chzn-container .chzn-results &:hover .link {
+        background: transparent;
+        text-decoration: underline;
+    }
+
+    &:active .link,
+    &.toggled .link,
+    .chzn-container .chzn-results &:active .link {
+        background: transparent;
+        text-decoration: underline;
+        @include box-shadow(none);
+    }
+
+    /* Alternate */
+    .alternate,
+    .chzn-container .chzn-results & .alternate {
+        background: $color-blue-hex;
+        border-color: $color-blue-hex;
+        color: $color-white-hex;
+        font-weight: $font-weight-semi;
+
+        span {
+            background-color: transparent;
+        }
+    }
+
+    &:hover .alternate,
+    .chzn-container .chzn-results &:hover .alternate {
+        background: mix($color-white-hex, $color-blue-hex, 8%);
+        border-color: mix($color-white-hex, $color-blue-hex, 8%);
+    }
+
+    &:active .alternate,
+    &.toggled .alternate,
+    .chzn-container .chzn-results &:active .alternate {
+        background: mix($color-black-hex, $color-blue-hex, 16%);
+        border-color: mix($color-black-hex, $color-blue-hex, 16%);
+    }
+
+    /* Default */
+    .default,
+    .chzn-container .chzn-results & .default {
+        background: $color-black-hex-12;
+        color: $color-black-hex-88;
+
+        .icon {
+            color: $color-black-hex-88;
+        }
+    }
+
+    &:hover .default,
+    .chzn-container .chzn-results &:hover .default {
+        background: $color-black-hex-12;
+    }
+
+    &:active .default,
+    &.toggled .default,
+    .chzn-container .chzn-results &:active .default {
+        background: $color-black-hex-12;
+    }
+
+    &.large span:not(.icon),
+    &.large em,
+    .chzn-container .chzn-results &.medium:active em {
+        padding: 9px 11px 8px;
+        font-size: 18px;
+
+        &.icon::before {
+            font-size: $font-size-s;
+        }
+    }
+
+    &.small span,
+    &.small em,
+    .chzn-container .chzn-results &.small:active em {
+        padding: 1px 7px;
+        font: $font-body-s;
+
+        &:not(.link) {
+            @include box-shadow(0 1px 2px rgba($color-black-hex, 0.05));
+        }
+
+        // 1- Sorry for making ugly things that look pretty
+        // 2- THOSE ITEMS DO NOT TAKE THE PARENT BOX-SHADOW
+        &.icon {
+            &:not(.link) {
+                border-color: $color-black-hex-32;
+            }
+
+            &::before {
+                margin-top: 5px;
+                font-size: 8px;
+            }
+
+            &.icon-ellipsis::before {
+                font-size: $font-size-l;
+                vertical-align: baseline;
+                line-height: 20px;
+                display: block;
+            }
+        }
+
+        &:active,
+        &.icon:active {
+            @include box-shadow(inset 0 1px 2px rgba($color-black-hex, 0.1));
+            @include box-shadow(inset 0 1px 2px rgba($color-black-hex, 0.1));
+        }
+    }
+
+    // DEPRECATED
+    &.xsmall {
+        font-size: $font-size-s;
+
+        span,
+        em {
+            @include border-radius(3px);
+            font: $font-body-s;
+            padding: 1px 7px;
+
+            &:not(.link) {
+                @include box-shadow(0 1px 2px rgba($color-black-hex, 0.05));
+            }
+
+            &.default {
+                color: $color-black-hex;
+            }
+
+            &.icon::before {
+                margin-top: 2px;
+                font-size: 8px;
+                line-height: 12px;
+            }
+
+            &:active:not(.link) {
+                @include box-shadow(inset 0 1px 2px rgba($color-black-hex, 0.1));
+            }
+        }
+    }
+
+    &.disabled {
+        opacity: 0.5;
+        pointer-events: none;
+        cursor: default;
+    }
+
+    &.only-icon {
+        &.size16 {
+            em,
+            span {
+                width: 20px;
+                height: 20px;
+                display: block;
+                padding: 0;
+                text-indent: -900px;
+                overflow: hidden;
+            }
+
+            .icon-configure {
+                background: url("/lib/icons/configure.png") center center no-repeat;
+            }
+        }
+
+        &.size14 {
+            em,
+            span {
+                width: 16px;
+                height: 16px;
+                display: block;
+                padding: 0;
+                text-indent: -900px;
+                overflow: hidden;
+            }
+
+            .icon-configure {
+                background: url("/lib/icons/configure-14px.png") center center no-repeat;
+            }
+        }
+    }
+}
+
+.btn-link {
+    padding: 12px 20px;
+    line-height: $line-height-s;
+    color: $color-black-hex-88;
+    background: transparent;
+    text-align: center;
+    outline: none;
+    font-weight: $font-weight-normal;
+    transition: all 0.25s ease-in-out;
+    border: 0;
+    cursor: pointer;
+
+    &:hover {
+        opacity: 0.85;
+    }
+
+    &:focus {
+        opacity: 0.7;
+    }
+}
+
+a.button {
+    color: $color-blue-hex;
+
+    &:hover {
+        color: $color-blue-hex;
+    }
+}
+
+button {
+    &.button {
+        font-size: $font-size-m;
+    }
+}
+
+/* Alternative buttons */
+.button_alt {
+    padding: 4px 10px;
+    font-size: $font-size-m;
+}
+.button_alt_pre {
+    padding: 4px 10px 3px 0;
+    font-size: $font-size-m;
+}
+
+.medium_button_alt {
+    padding: 3px 8px;
+    font-size: $font-size-m;
+}
+.medium_button_alt_pre {
+    padding: 3px 8px 3px 0;
+    font-size: $font-size-m;
+}
+
+.small_button_alt {
+    padding: 2px 7px;
+    font-size: $font-size-s;
+}
+.small_button_alt_pre {
+    padding: 2px 7px 2px 0;
+    font-size: $font-size-s;
+}
+
+.selectSettings.button {
+    .default {
+        padding: 4px 9px;
+    }
+
+    .applicationIcon {
+        padding: 0px;
+    }
+}
+#contextualViewToggleParent {
+    position: relative;
+    margin-right: 8px;
+}
+
+.schedulingButton,
+.calendar__scheduling {
+    .extraIcon:hover {
+        .cui4-icon {
+            fill: $color-black-hex;
+        }
+    }
+}
