@@ -9,12 +9,6 @@ export const configsToAddMissingJsxAttribute: ConfigToAddMissingJsxProp[] = [
         newAttributeName: "showEditIcon",
         newAttributeValue: false,
     },
-    ...["Select", "Tag"].map(exportedAs => ({
-        importedFrom: cuiLibraryName,
-        exportedAs: exportedAs,
-        newAttributeName: "hasError",
-        newAttributeValue: false,
-    })),
     {
         importedFrom: cuiLibraryName,
         exportedAs: "Panel",
